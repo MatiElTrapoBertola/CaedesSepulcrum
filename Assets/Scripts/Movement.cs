@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Movement : MonoBehaviour
+public class Movement : MonoBehaviour   //"Script de momiviento"
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
