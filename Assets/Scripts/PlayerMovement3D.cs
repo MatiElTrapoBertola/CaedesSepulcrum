@@ -3,31 +3,53 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement3D : MonoBehaviour
 {
-    [Header("Ajustes de movimiento")]
-    [SerializeField] private float speed = 25f;
-    [SerializeField] private float sprintMultiplier = 3f;
-    [SerializeField] private float rotationspeed = 200f;
+    [SerializeField] private float speed = 8f;
+    [SerializeField] private float rotationSpeed = 200f;
+    [SerializeField] private float rayDistance = 1.2f;        
+    [SerializeField] private LayerMask detectionLayer = ~0;  
 
     private Vector2 moveInput;
-    private bool isSprinting;
 
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
     }
-    public void OnSprint(InputAction.CallbackContext context)
-    {
-        if (context.performed) isSprinting = true;
-        if (context.canceled) isSprinting = false;
-    }
 
-    // Update is called once per frame
     void Update()
     {
-        float speedZ = moveInput.y;
-        float rotationX = moveInput.x;
+        float speedZ = moveInput.y;    
+        float rotationX = moveInput.x; 
 
-        transform.Translate(Vector3.forward * speedZ * Time.deltaTime);
-        transform.Rotate(Vector3.up * rotationX * rotationspeed * Time.deltaTime);
+        transform.Rotate(Vector3.up * rotationX * rotationSpeed * Time.deltaTime);
+
+        bool canMove = true;
+
+        if (speedZ != 0)
+        {
+            Vector3 rayDirection = speedZ > 0 ? transform.forward : -transform.forward;
+            Vector3 origin = transform.position + Vector3.up * 1f;
+
+            RaycastHit hit;
+
+            if (Physics.Raycast(origin, rayDirection, out hit, rayDistance, detectionLayer))
+            {
+                canMove = false;
+                Debug.Log("Obstáculo detectado por Raycast (" + (speedZ > 0 ? "Raycast disparado por frente" : "Raycast disparado por atrás") + "): " + hit.collider.name);
+            }
+        }
+
+        if (canMove)
+        {
+            transform.Translate(Vector3.forward * speedZ * speed * Time.deltaTime);
+        }
+    }
+
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Vector3 origin = transform.position + Vector3.up * 1f;
+        Gizmos.DrawRay(origin, transform.forward * rayDistance);
+        Gizmos.DrawRay(origin, -transform.forward * rayDistance);
     }
 }
