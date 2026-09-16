@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Movement3D : MonoBehaviour
 {
-    [SerializeField] private float speed = 5f;
+    [SerializeField] private float speed = 20f;
     [SerializeField] private float rotation = 200f;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
