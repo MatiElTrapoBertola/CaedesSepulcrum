@@ -1139,11 +1139,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Move: ASWD
-
-    Fire: K
-
-'
+  m_text: 'Move: ASWD'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8e78d43286459144abf0bf9903899dbd, type: 2}
   m_sharedMaterial: {fileID: -5241110591345826239, guid: 8e78d43286459144abf0bf9903899dbd, type: 2}
