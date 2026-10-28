@@ -1139,7 +1139,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Move: ASWD
+  m_text: 'Move: WASD
 
     Fire: K
 
@@ -1863,8 +1863,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4285933401
-  m_fontColor: {r: 0.3475658, g: 0.15325733, b: 0.4641509, a: 1}
+    rgba: 4288490099
+  m_fontColor: {r: 0.4502219, g: 0.16595937, b: 0.6150943, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
