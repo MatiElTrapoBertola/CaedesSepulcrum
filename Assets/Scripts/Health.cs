@@ -9,6 +9,7 @@ public class HealthChangedEvent : UnityEvent<float, float> { }
 public class Health : MonoBehaviour, IDamageable
 {
     [Header("Configuración de Vida")]
+    [SerializeField] private PlayerSkillsManager skillsManager;
     [SerializeField] private float maxHealth = 100f;
     [SerializeField] private float currentHealth;
     // El valor actual de vida se inicializa en el valor máximo al inicio del juego
@@ -30,6 +31,8 @@ public class Health : MonoBehaviour, IDamageable
     public float CurrentHealth => currentHealth;
     public float MaxHealth => maxHealth;
 
+    public bool IsDead => isDead;
+
     private void Awake()
     {
         currentHealth = maxHealth;
@@ -37,6 +40,8 @@ public class Health : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        RefreshStats();
+
         onHealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
@@ -46,6 +51,17 @@ public class Health : MonoBehaviour, IDamageable
         {
             Heal(healthRegenPerSecond * Time.deltaTime);
         }
+    }
+
+
+    private void RefreshStats()
+    {
+        if (skillsManager == null)
+            return;
+
+        damageReduction = skillsManager.GetDamageReduction();
+
+        healthRegenPerSecond = skillsManager.GetHealthRegenPerSecond();
     }
 
     public void TakeDamage(float amount)
@@ -70,6 +86,16 @@ public class Health : MonoBehaviour, IDamageable
 
         currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
         onHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
+    public void SetInvulnerable(bool value)
+    {
+        isInvulnerable = value;
+    }
+
+    public bool IsInvulnerable()
+    {
+        return isInvulnerable;
     }
 
     private void Die()

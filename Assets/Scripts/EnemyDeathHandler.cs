@@ -26,7 +26,37 @@ public class EnemyDeathHandler : MonoBehaviour
         {
             Instantiate(lootPrefab, transform.position, Quaternion.identity);
         }
+
+        PlayerResources playerResources = FindFirstObjectByType<PlayerResources>();
+
+        if (playerResources != null)
+        {
+            PlayerSkillsManager skillsManager = FindFirstObjectByType<PlayerSkillsManager>();
+
+            float materialMultiplier = 1f;
+
+            if (skillsManager != null)
+            {
+                materialMultiplier = skillsManager.GetMaterialMultiplier();
+            }
+
+            int finalMaterials = Mathf.RoundToInt(resourceDropAmount * materialMultiplier);
+
+            playerResources.AddMaterials(finalMaterials);
+
+            Debug.Log("Materiales obtenidos: " + finalMaterials);
+            
+        }
+
         GetComponent<Collider>().enabled = false;
-        Destroy(gameObject, 0.1f); 
+
+        PlayerKillTracker killTracker = FindFirstObjectByType<PlayerKillTracker>();
+
+        if (killTracker != null)
+        {
+            killTracker.RegisterKill();
+        }
+
+        Destroy(gameObject, 0.1f);
     }
 }
