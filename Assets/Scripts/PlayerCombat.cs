@@ -34,6 +34,9 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private ParticleSystem divineExplosionFX;
     [SerializeField] private PlayerActiveSkills activeSkills;
     [SerializeField] private PlayerStamina stamina;
+
+    [SerializeField] private Camera playerCamera;
+    [SerializeField] private LayerMask aimLayers;
     
     
     
@@ -171,7 +174,9 @@ public class PlayerCombat : MonoBehaviour
             Debug.Log("Municion restante : " + currentAmmo + "/" + maxAmmo);
         }
 
-        Bullet newBullet = Instantiate(bullet, weaponCannon.position, weaponCannon.rotation);
+        Quaternion bulletRotation = Quaternion.LookRotation(playerCamera.transform.forward);
+
+        Bullet newBullet = Instantiate(bullet, weaponCannon.position, bulletRotation);
 
         float damage = damageManager.GetFinalDamage();
 
@@ -200,6 +205,19 @@ public class PlayerCombat : MonoBehaviour
         pistolObject.SetActive(currentWeapon == WeaponType.Pistol);
     }
     
+    private Vector3 GetAimPoint()
+    {
+        Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f));
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, 100f, aimLayers))
+        {
+            return hit.point;
+        }
+
+        return ray.origin + ray.direction * 100f;
+    }
        
     
 }
