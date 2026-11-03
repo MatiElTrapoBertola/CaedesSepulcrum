@@ -127,6 +127,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
   speed: 30
+  impactVOlume: 0.8
+  impactVolume: 0.8
+  impactClips:
+  - {fileID: 8300000, guid: 2341e1b0c7a832a4e87d99f95d34f1d6, type: 3}
+  - {fileID: 8300000, guid: 995a70f84f52f3a40b47050cdb4724ba, type: 3}
+  - {fileID: 8300000, guid: ec61c894e0179a242bb0b026bb5810cc, type: 3}
+  minPitch: 0.95
+  maxPitch: 1.05
 --- !u!54 &-8800563856586892870
 Rigidbody:
   m_ObjectHideFlags: 0

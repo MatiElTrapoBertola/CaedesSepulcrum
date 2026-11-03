@@ -8,9 +8,15 @@ public class Bullet : MonoBehaviour
     private float explosionRadius;
     private float explosionDamage;
     private LayerMask enemyLayer;
-
     private float damage;
     private Rigidbody rb;
+
+    [Header("Impact Audio")]
+    [SerializeField][Range(0f, 2f)] private float impactVOlume = 1f;
+    [SerializeField] private float impactVolume = 0.7f;
+    [SerializeField] private AudioClip[] impactClips;
+    [SerializeField] private float minPitch = 0.95f;
+    [SerializeField] private float maxPitch = 1.05f;
 
     private void Awake()
     {
@@ -34,12 +40,25 @@ public class Bullet : MonoBehaviour
         transform.position += transform.forward * speed * Time.deltaTime;
     }
 
+    private void PlayImpactSound()
+    {
+        if (impactClips == null || impactClips.Length == 0)
+            return;
+
+        AudioClip selectedClip = impactClips[Random.Range(0, impactClips.Length)];
+
+        AudioSource.PlayClipAtPoint(selectedClip, transform.position, impactVolume);
+
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
             return;
 
         Debug.Log("La Bala golpeo: " + other.name);
+
+        PlayImpactSound();
 
         Health enemyHealth = other.GetComponentInParent<Health>();
 

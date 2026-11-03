@@ -12,103 +12,143 @@ public class WaveManager : MonoBehaviour
     [SerializeField] private GameObject strongEnemy;
     [SerializeField] private GameObject bossEnemy;
 
-    [Header("Wave Settings")]
-    [SerializeField] private float timeBetweenWaves = 5f;
+    [Header("Enemy COunts")]
+    [SerializeField] private int normalEnemyCount = 30;
+    [SerializeField] private int strongEnemyCount = 0;
+
+    [Header("Boss")]
+    [SerializeField] private bool spawnBoss = false;
+    [SerializeField] private float bossSpawnDelay = 10f;
+
+    [Header("Spawn Settings")]
+    [SerializeField] private float portalDelay = 1f;
+    [SerializeField] private float minSpawnInterval = 0.25f;
+    [SerializeField] private float maxSpawnInterval = 1f;
+    [SerializeField] private float spawnRadius = 3f;
 
     private readonly List<GameObject> aliveEnemies = new List<GameObject>();
 
-    private int currentWave = 0;
-    private bool waveActive = false;
+   private bool waveFinished = false;
+    private int activeSpawnCoroutines = 0;
     
     private void Start()
     {
-        StartCoroutine(StartLevel());
+        StartCoroutine(StartWave());
     }
 
-    private IEnumerator StartLevel()
+    private IEnumerator StartWave()
     {
-        yield return new WaitForSeconds(2f);
+        OpenAllPortals();
 
-        StartWave1();
+        yield return new WaitForSeconds(portalDelay);
+
+        if (normalEnemy != null && normalEnemyCount > 0)
+        {
+            SpawnEnemies(normalEnemy, normalEnemyCount);
+        }
+
+        if (strongEnemy != null && strongEnemyCount > 0)
+        {
+            SpawnEnemies(strongEnemy, strongEnemyCount);
+        }
+
+        if (spawnBoss && bossEnemy != null)
+        {
+            StartCoroutine(SpawnBossAfterDelay());
+        }
+
+       
+      
+
+      
     }
 
     private void Update()
     {
-        if (!waveActive)
-            return;
-
         aliveEnemies.RemoveAll(enemy => enemy == null);
 
-        if (aliveEnemies.Count == 0)
+        if(!waveFinished && activeSpawnCoroutines == 0 && aliveEnemies.Count == 0)
         {
-            waveActive = false;
+            waveFinished = true;
 
-            StartCoroutine(StartNextWave());
+            Debug.Log("Oleada completada");
         }
     }
 
-    private IEnumerator StartNextWave()
+    private void OpenAllPortals()
     {
-        Debug.Log("Oleada completada. Siguiente oleada en " + timeBetweenWaves + " segundos");
-
-        yield return new WaitForSeconds(timeBetweenWaves);
-
-        currentWave++;
-
-        switch (currentWave)
+        foreach (EnemyPortalSpawner portal in portals)
         {
-            case 1: StartWave2();
-                break;
-
-            case 2: StartWave3();
-                break;
-
-            case 3: Debug.Log("Nivel completado");
-                break;
-
-            
+            if (portal != null)
+            {
+                portal.PlayPortalEffect();
+            }
         }
-    }
-
-    private void StartWave1()
-    {
-        Debug.Log("Iniciando oleada 1");
-
-        SpawnEnemies(normalEnemy, 5);
-
-        waveActive = true;
-    }
-
-    private void StartWave2()
-    {
-        Debug.Log("Iniciando Oleada 2");
-
-        SpawnEnemies(normalEnemy, 8);
-        SpawnEnemies(strongEnemy, 2);
-    }
-
-    private void StartWave3()
-    {
-        Debug.Log("Iniciando Oleada 3");
-
-        SpawnEnemies(normalEnemy, 10);
-        SpawnEnemies(strongEnemy, 4);
-        SpawnEnemies(bossEnemy, 1);
-
-        waveActive = true;
     }
 
     private void SpawnEnemies(GameObject enemyPrefab, int amount)
     {
-        for(int i = 0; i < amount; i++)
-        {
-            EnemyPortalSpawner portal = portals[Random.Range(0, portals.Length)];
-
-            portal.PlayPortalEffect();
-
-            GameObject enemy = Instantiate(enemyPrefab, portal.transform.position, Quaternion.identity);
-
-            aliveEnemies.Add(enemy);
-        }
+        StartCoroutine(SpawnEnemiesCoroutine(enemyPrefab, amount));
     }
+
+    private IEnumerator SpawnEnemiesCoroutine(GameObject enemyPrefab, int amount)
+    {
+       activeSpawnCoroutines++;
+
+        for (int i = 0; i < amount; i++)
+        {
+       
+
+            EnemyPortalSpawner spawnPortal = portals[Random.Range(0, portals.Length)];
+
+            if (spawnPortal != null)
+            {
+                Vector3 randomOffset = new Vector3(Random.Range(-spawnRadius, spawnRadius), 0f, Random.Range(-spawnRadius, spawnRadius));
+
+                Vector3 spawnPosition = spawnPortal.transform.position + randomOffset;
+
+                GameObject enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+
+                aliveEnemies.Add(enemy);
+
+                Debug.Log("Spawn enemigo " + (i + 1) + "/" + amount);
+            }
+
+           
+
+            yield return new WaitForSeconds(Random.Range(minSpawnInterval, maxSpawnInterval));
+        }
+
+        activeSpawnCoroutines--;
+    }
+    
+    private IEnumerator SpawnBossAfterDelay()
+    {
+        yield return new WaitForSeconds(bossSpawnDelay);
+
+        OpenAllPortals();
+
+        yield return new WaitForSeconds(portalDelay);
+
+        EnemyPortalSpawner bossPortal = portals[Random.Range(0, portals.Length)];
+
+        if (bossPortal != null)
+        {
+            GameObject boss = Instantiate(bossEnemy, bossPortal.transform.position, Quaternion.identity);
+
+            aliveEnemies.Add(boss);
+
+            Debug.Log("El jefe ha llegado");
+        }
+
+        
+    }
+
+    public bool IsWaveFinished()
+    {
+        return waveFinished;
+    }
+
+
+   
 }

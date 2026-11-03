@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1615680767479703657}
   - component: {fileID: 7138250460934688950}
+  - component: {fileID: 5560436023856825995}
   m_Layer: 0
   m_Name: HealingPotion
   m_TagString: Untagged
@@ -55,3 +56,22 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5560436023856825995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7714697657903042972}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08771a357269f224398d1ccbded01e74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthPotion
+  healAmount: 25
+  pickupVolume: 0.5
+  pickupClips:
+  - {fileID: 8300000, guid: 7644497a30ee5f241b8c075cfed85a33, type: 3}
+  - {fileID: 8300000, guid: 67267fc5c27adef46945a827dda7825a, type: 3}
+  minPitch: 0.95
+  maxPitch: 1.05

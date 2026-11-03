@@ -1,4 +1,4 @@
-using System;
+
 using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
@@ -9,6 +9,13 @@ public class PlayerCombat : MonoBehaviour
 
     [Header("Weapon")]
     [SerializeField] private WeaponType currentWeapon = WeaponType.Shovel;
+    [Header("Weapon Swap Audio")]
+    [SerializeField][Range(0f, 2f)] private float weaponSwapVolume = 1f;
+    [SerializeField] private AudioSource weaponSwapAudioSource;
+    [SerializeField] private AudioClip[] weaponSwapClips;
+    [SerializeField] private float weaponSwapMinPitch = 0.95f;
+    [SerializeField] private float weaponSwapMaxPitch = 1.05f;
+
 
     [Header("WeaponModels")]
     [SerializeField] private GameObject shovelObject;
@@ -16,6 +23,17 @@ public class PlayerCombat : MonoBehaviour
 
     [Header("Shovel")]
     [SerializeField] private float attackStaminaCost = 10f;
+    [Header("Shovel Audio")]
+    [SerializeField] [Range(0f,2f)] private float shovelSwingVolume = 1f;
+    [SerializeField] [Range(0f,2f)] private float shovelImpactVolume = 1f;
+    [SerializeField] private AudioSource shovelAudioSource;
+    [SerializeField] private AudioClip[] shovelSwingClips;
+    [SerializeField] private float shovelMinPitch = 0.9f;
+    [SerializeField] private float shovelMaxPitch = 1.1f;
+    [SerializeField] private AudioClip[] shovelHitClips;
+    [SerializeField] private float shovelHitMinPitch = 0.95f;
+    [SerializeField] private float shovelHitMaxPitch = 0.95f;
+    
 
     [Header("References")]
     [SerializeField] private PlayerDamageManager damageManager;
@@ -28,6 +46,16 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private Bullet bullet;
     private int currentAmmo;
     private float nextFireTime;
+    [Header("Pistol Audio")]
+    [SerializeField][Range(0f, 2f)] private float pistolVolume = 1f;
+  
+    [SerializeField] private AudioSource pistolAudioSource;
+    [SerializeField] private AudioClip[] pistolShotClips;
+    [SerializeField] private bool randomPitch = true;
+    [SerializeField] private float pistolMinPitch = 0.95f;
+    [SerializeField] private float pistolMaxPitch = 1.05f;
+  
+   
 
     [SerializeField] private float explosionRadius = 4f;
     [SerializeField] private float explosionDamage = 15f;
@@ -62,6 +90,8 @@ public class PlayerCombat : MonoBehaviour
 
             UpdateWeaponVisuals();
 
+            PlayWeaponSwapSound();
+
             Debug.Log("Arma actual: " + currentWeapon);
         }
 
@@ -87,11 +117,16 @@ public class PlayerCombat : MonoBehaviour
 
     private void PerformShovelAttack()
 {
+
+        
+
     if (!activeSkills.SinPiedadActive)
     {
         if (!stamina.ConsumeStamina(attackStaminaCost))
             return;
     }
+
+    PlayShovelSound();
 
     Collider[] enemies = Physics.OverlapSphere(transform.position + transform.forward, attackRange,enemyLayer);
 
@@ -100,10 +135,15 @@ public class PlayerCombat : MonoBehaviour
 
     foreach (Collider enemy in enemies)
     {
+
+        
+
         Health enemyHealth = enemy.GetComponent<Health>();
 
         if (enemyHealth != null)
         {
+            PlayShovelImpactSound(enemy.transform.position);
+
             bool divineAttack = damageManager.ConsumeDivineHit();
 
             enemyHealth.TakeDamage(damage);
@@ -178,6 +218,8 @@ public class PlayerCombat : MonoBehaviour
 
         Bullet newBullet = Instantiate(bullet, weaponCannon.position, bulletRotation);
 
+        PlayPistolShotSound();
+
         float damage = damageManager.GetFinalDamage();
 
         bool divineAttack = damageManager.ConsumeDivineHit();
@@ -196,6 +238,78 @@ public class PlayerCombat : MonoBehaviour
         currentAmmo = maxAmmo;
 
         Debug.Log("Recargando");
+    }
+
+    private void PlayPistolShotSound()
+    {
+        if (pistolAudioSource == null) return;
+
+        if (pistolShotClips == null || pistolShotClips.Length == 0) return;
+
+        AudioClip selectedClip = pistolShotClips[Random.Range(0, pistolShotClips.Length)];
+
+        if (randomPitch)
+        {
+            pistolAudioSource.pitch = Random.Range(pistolMinPitch, pistolMaxPitch);
+        }
+
+        pistolAudioSource.PlayOneShot(selectedClip, pistolVolume);
+
+        pistolAudioSource.pitch = 1f;
+    }
+
+    private void PlayShovelSound()
+    {
+        if (shovelAudioSource == null) return;
+
+        if (shovelSwingClips == null || shovelSwingClips.Length == 0) return;
+
+        AudioClip selectedClip = shovelSwingClips[Random.Range(0, shovelSwingClips.Length)];
+
+        shovelAudioSource.pitch = Random.Range(shovelMinPitch, shovelMaxPitch);
+
+        shovelAudioSource.PlayOneShot(selectedClip, shovelSwingVolume);
+
+        shovelAudioSource.pitch = 1f;
+    }
+
+    private void PlayShovelImpactSound(Vector3 hitPosition)
+    {
+        if (shovelHitClips == null || shovelHitClips.Length == 0)
+            return;
+
+        AudioClip selectedClip = shovelHitClips[Random.Range(0, shovelHitClips.Length)];
+
+        GameObject tempAudio = new GameObject("ShovelImpactAudio");
+
+        tempAudio.transform.position = hitPosition;
+
+        AudioSource source = tempAudio.AddComponent<AudioSource>();
+
+        source.pitch = Random.Range(shovelHitMinPitch, shovelHitMaxPitch);
+
+        source.spatialBlend = 1f;
+
+        source.PlayOneShot(selectedClip,shovelImpactVolume);
+
+        Destroy(tempAudio, selectedClip.length);
+    }
+
+    private void PlayWeaponSwapSound()
+    {
+        if (weaponSwapAudioSource == null)
+            return;
+
+        if (weaponSwapClips == null || weaponSwapClips.Length == 0)
+            return;
+
+        AudioClip selectedClip = weaponSwapClips[Random.Range(0, weaponSwapClips.Length)];
+
+        weaponSwapAudioSource.pitch = Random.Range(weaponSwapMinPitch, weaponSwapMaxPitch);
+
+        weaponSwapAudioSource.PlayOneShot(selectedClip, weaponSwapVolume);
+
+        weaponSwapAudioSource.pitch = 1f;
     }
 
     private void UpdateWeaponVisuals()
@@ -219,5 +333,6 @@ public class PlayerCombat : MonoBehaviour
         return ray.origin + ray.direction * 100f;
     }
        
+
     
 }

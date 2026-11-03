@@ -211,3 +211,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathHandler
   lootPrefab: {fileID: 0}
   resourceDropAmount: 2
+  deathVolume: 0.9
+  deathClips:
+  - {fileID: 8300000, guid: 34575038c7c329740a647f3203c7ca92, type: 3}
+  - {fileID: 8300000, guid: 99e99d0d7482a364196fbce10b8095e0, type: 3}
+  - {fileID: 8300000, guid: df81120534d0834418a6e842c5f0e62e, type: 3}
+  - {fileID: 8300000, guid: b4f0a5888a1d16b4d9bd1459cd87fd83, type: 3}
+  minPitch: 0.95
+  maxPitch: 1.05

@@ -1,8 +1,17 @@
 using UnityEngine;
 
+
+
 public class HealthPotion : MonoBehaviour
 {
     [SerializeField] private int healAmount = 25;
+
+    [Header("Audio")]
+    [SerializeField][Range(0f, 2f)] private float pickupVolume = 1f;
+    [SerializeField] private AudioClip[] pickupClips;
+    [SerializeField] private float minPitch = 0.95f;
+    [SerializeField] private float maxPitch = 1.05f;
+
 
     private void OnTriggerEnter(Collider other)
     {
@@ -34,6 +43,20 @@ public class HealthPotion : MonoBehaviour
             "Poción usada. Curación: " +
             finalHealing);
 
+        PlayPickupSound();
+
         Destroy(gameObject);
+    }
+
+    private void PlayPickupSound()
+    {
+        if (pickupClips == null || pickupClips.Length == 0)
+            return;
+
+        AudioClip selectedClip = pickupClips[Random.Range(0, pickupClips.Length)];
+
+        AudioSource.PlayClipAtPoint(selectedClip, transform.position, pickupVolume);
+
+
     }
 }
