@@ -11,8 +11,8 @@ NavMeshProjectSettings:
     cost: 1
   - name: Jump
     cost: 2
-  - name: 
-    cost: 1
+  - name: Mud
+    cost: 10
   - name: 
     cost: 1
   - name: 
@@ -74,9 +74,9 @@ NavMeshProjectSettings:
   - serializedVersion: 3
     agentTypeID: 0
     agentRadius: 0.5
-    agentHeight: 1.11
+    agentHeight: 2
     agentSlope: 35
-    agentClimb: 0.52
+    agentClimb: 0.5
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
     minRegionArea: 2
@@ -91,10 +91,10 @@ NavMeshProjectSettings:
       m_Flags: 0
   - serializedVersion: 3
     agentTypeID: -334000983
-    agentRadius: 0.8
+    agentRadius: 1
     agentHeight: 2
     agentSlope: 20
-    agentClimb: 0.4
+    agentClimb: 0.25
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
     minRegionArea: 2
@@ -109,10 +109,10 @@ NavMeshProjectSettings:
       m_Flags: 0
   - serializedVersion: 3
     agentTypeID: 1479372276
-    agentRadius: 1
+    agentRadius: 1.5
     agentHeight: 2
     agentSlope: 20
-    agentClimb: 0.001
+    agentClimb: 0.29
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
     minRegionArea: 2
@@ -127,10 +127,10 @@ NavMeshProjectSettings:
       m_Flags: 0
   - serializedVersion: 3
     agentTypeID: -1923039037
-    agentRadius: 2.5
-    agentHeight: 3.5
-    agentSlope: 20
-    agentClimb: 0.001
+    agentRadius: 3
+    agentHeight: 4.5
+    agentSlope: 12
+    agentClimb: 0.5
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
     minRegionArea: 2
@@ -145,6 +145,6 @@ NavMeshProjectSettings:
       m_Flags: 0
   m_SettingNames:
   - Player
-  - Enemy1
-  - Enemy2
+  - Zombie
+  - Skeleton
   - Boss
