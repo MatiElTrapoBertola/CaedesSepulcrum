@@ -215,6 +215,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathHandler
   lootPrefab: {fileID: 0}
   resourceDropAmount: 2
+  healthPotionPrefab: {fileID: 7859597006823311159, guid: 11f1bd16d0da2b64daaf4de74d13437b, type: 3}
+  potionDropChance: 100
+  dropRadius: 5
   deathVolume: 0.9
   deathClips:
   - {fileID: 8300000, guid: 34575038c7c329740a647f3203c7ca92, type: 3}

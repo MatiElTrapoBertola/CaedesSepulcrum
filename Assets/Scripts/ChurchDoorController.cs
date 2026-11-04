@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ChurchDoorController : MonoBehaviour
 {
@@ -8,9 +9,15 @@ public class ChurchDoorController : MonoBehaviour
     private void Start()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
+
         if (player != null)
         {
             playerTransform = player.transform;
+            Debug.Log("Jugador encontrado por la puerta");
+        }
+        else
+        {
+            Debug.LogError("La puerta NO encontro al jugador");
         }
     }
 
@@ -18,19 +25,32 @@ public class ChurchDoorController : MonoBehaviour
     {
         if (playerTransform == null) return;
 
+     
         float distance = Vector3.Distance(transform.position, playerTransform.position);
 
-      
-        if (distance <= interactionDistance && Input.GetKeyDown(KeyCode.F))
+        if (distance <= interactionDistance)
         {
-            if (GameManager.Instance != null)
+           
+            if (Keyboard.current != null && Keyboard.current.fKey.wasPressedThisFrame)
             {
-                GameManager.Instance.ProceedToNextNight();
-            }
-            else
-            {
-                Debug.LogWarning("No se encontró el GameManager en la escena.");
+                Debug.Log("Puerta utilizada - Avanzando de noche");
+
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.ProceedToNextNight();
+                }
+                else
+                {
+                    Debug.LogError("No se encontró el GameManager en la escena.");
+                }
             }
         }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+       
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, interactionDistance);
     }
 }

@@ -39,14 +39,20 @@ public class GameManager : MonoBehaviour
 
     public void ProceedToNextNight()
     {
+        Debug.Log("ProceedToNextNight ejecutado");
+
         currentNight++;
+
+        Debug.Log("Nueva noche: " + currentNight);
 
         if (currentNight == 2)
         {
+            Debug.Log("Intentando cargar Noche2");
             SceneManager.LoadScene("Noche2");
         }
         else if (currentNight == 3)
         {
+            Debug.Log("Intentando cargar Noche3");
             SceneManager.LoadScene("Noche3");
         }
     }

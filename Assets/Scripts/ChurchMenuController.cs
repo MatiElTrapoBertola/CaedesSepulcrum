@@ -5,6 +5,6 @@ public class ChurchMenuController : MonoBehaviour
 {
    public void GoToNight2()
     {
-        SceneManager.LoadScene("CemeteryNight2");
+        SceneManager.LoadScene("Noche2");
     }
 }
