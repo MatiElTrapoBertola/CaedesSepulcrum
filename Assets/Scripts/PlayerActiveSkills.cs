@@ -51,7 +51,7 @@ public class PlayerActiveSkills : MonoBehaviour
             ActivateBlessing();
         }
 
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.Z))
         {
             ActivateSinPiedad();
         }

@@ -4,12 +4,58 @@ using UnityEngine;
 
 public class PlayerSkillsManager : MonoBehaviour
 {
-    private Dictionary<SkillType, int> skillLevels =
-        new Dictionary<SkillType, int>();
+    [Header("Economy settings")]
+    [SerializeField] private PlayerResources playerResources;
+    [SerializeField] private int baseCost = 10;
+
+    private Dictionary<SkillType, int> skillLevels = new Dictionary<SkillType, int>();
+    private static PlayerSkillsManager instance;
 
     private void Awake()
     {
-        InitializeSkills();
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+            InitializeSkills();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
+    }
+
+    public int GetSkillCost(SkillType skill)
+    {
+        int currentLevel = GetSkillLevel(skill);
+        return baseCost * (currentLevel + 1);
+    }
+
+    public bool TryPurchaseSkill(SkillType skill)
+    {
+        int currentLevel = GetSkillLevel(skill);
+        int maxLevel = GetMaxLevel(skill);
+
+        if (currentLevel >= maxLevel)
+        {
+            Debug.Log("La Habilidad ya esta al nivel maximo");
+            return false;
+        }
+
+        int cost = GetSkillCost(skill);
+        
+        if (playerResources != null && playerResources.SpendMaterials(cost))
+        {
+            UpgradeSkill(skill);
+            Debug.Log("Mejora Comprada con exito " + skill + "(nivel " + GetSkillLevel(skill) + ")");
+            return true;
+        }
+
+        Debug.Log("No hay suficientes materiales para mejorar " + skill);
+        return false;
+
+
     }
 
     private void InitializeSkills()
@@ -162,13 +208,7 @@ public class PlayerSkillsManager : MonoBehaviour
 
     private void Start()
     {
-        SetSkillLevel(SkillType.SinRemordimiento, 5);
-        SetSkillLevel(SkillType.Salvador, 5);
-        SetSkillLevel(SkillType.GraciaDeDios, 10);
-        SetSkillLevel(SkillType.ConLosAngeles, 5);
-        SetSkillLevel(SkillType.QueSiganViniendo, 3);
-        SetSkillLevel(SkillType.AlQueMadruga, 5);
-        SetSkillLevel(SkillType.ElixirDeLosAngeles, 3);
+       
        
     }
 }

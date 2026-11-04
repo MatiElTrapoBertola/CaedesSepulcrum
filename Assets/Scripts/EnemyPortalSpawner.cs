@@ -4,6 +4,7 @@ using UnityEngine;
 public class EnemyPortalSpawner : MonoBehaviour
 {
     [SerializeField] private ParticleSystem PortalFX;
+
     [Header("Portal Audio")]
     [SerializeField][Range(0f, 2f)] private float portalVolume = 1f;
     [SerializeField] private AudioClip[] portalclips;
@@ -29,18 +30,13 @@ public class EnemyPortalSpawner : MonoBehaviour
 
         AudioClip selectedClip = portalclips[Random.Range(0, portalclips.Length)];
 
-        GameObject tempAudio = new GameObject("Portal Audio");
+        float randomPitch = Random.Range(minPitch, maxPitch);
 
-        tempAudio.transform.position = transform.position;
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(selectedClip, portalVolume, randomPitch);
+        }
 
-        AudioSource source = tempAudio.AddComponent<AudioSource>();
-
-        source.spatialBlend = 1f;
-
-        source.pitch = Random.Range(minPitch, maxPitch);
-
-        source.PlayOneShot(selectedClip, portalVolume);
-
-        Destroy(tempAudio, selectedClip.length);
+      
     }
 }

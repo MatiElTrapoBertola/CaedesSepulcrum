@@ -28,23 +28,19 @@ public class EnemyDeathHandler : MonoBehaviour
 
     private void PlayDeathSound()
     {
-        if (deathClips == null || deathClips.Length == 0) return;
+        if (deathClips == null || deathClips.Length == 0) 
+            return;
 
         AudioClip selectedClip = deathClips[Random.Range(0, deathClips.Length)];
 
-        GameObject tempAudio = new GameObject("EnemyDeathAudio");
+        float randomPitch = Random.Range(minPitch, maxPitch);
 
-        tempAudio.transform.position = transform.position;
+        if(AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(selectedClip, deathVolume, randomPitch);
+        }
 
-        AudioSource source = tempAudio.AddComponent<AudioSource>();
-
-        source.spatialBlend = 1f;
-
-        source.pitch = Random.Range(minPitch, maxPitch);
-
-        source.PlayOneShot(selectedClip, deathVolume);
-
-        Destroy(tempAudio, selectedClip.length);
+       
     }
     private void HandleDeath()
     {

@@ -9,8 +9,20 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: b0b1335fc1bcde54ba2127008cd115e8
   - enabled: 1
-    path: Assets/Scenes/PrototypeLevel.unity
+    path: Assets/Scenes/Noche1.unity
     guid: ca7c9d11815c63e4e8f15b4a6085ea2b
+  - enabled: 1
+    path: Assets/Scenes/ChurchScene.unity
+    guid: 467901ed63686c04dbe296ed1abc5800
+  - enabled: 1
+    path: Assets/Scenes/Noche2.unity
+    guid: a354a7164e6b6854b9c736749a3c9906
+  - enabled: 1
+    path: Assets/Scenes/Noche3.unity
+    guid: 19e5abb4fd61e7247988868e6a0814b1
+  - enabled: 1
+    path: Assets/Scenes/WinScene.unity
+    guid: be6870f24c39bc64e93b3c7ca4830fa0
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

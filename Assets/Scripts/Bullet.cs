@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -12,7 +12,6 @@ public class Bullet : MonoBehaviour
     private Rigidbody rb;
 
     [Header("Impact Audio")]
-    [SerializeField][Range(0f, 2f)] private float impactVOlume = 1f;
     [SerializeField] private float impactVolume = 0.7f;
     [SerializeField] private AudioClip[] impactClips;
     [SerializeField] private float minPitch = 0.95f;
@@ -45,9 +44,18 @@ public class Bullet : MonoBehaviour
         if (impactClips == null || impactClips.Length == 0)
             return;
 
+
         AudioClip selectedClip = impactClips[Random.Range(0, impactClips.Length)];
 
-        AudioSource.PlayClipAtPoint(selectedClip, transform.position, impactVolume);
+        float randomPitch = Random.Range(minPitch, maxPitch);
+
+        if(AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(selectedClip, impactVolume, randomPitch);
+        }
+
+
+       
 
     }
 

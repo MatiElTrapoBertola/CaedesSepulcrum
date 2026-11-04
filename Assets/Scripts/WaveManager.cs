@@ -12,7 +12,7 @@ public class WaveManager : MonoBehaviour
     [SerializeField] private GameObject strongEnemy;
     [SerializeField] private GameObject bossEnemy;
 
-    [Header("Enemy COunts")]
+    [Header("Enemy Counts")]
     [SerializeField] private int normalEnemyCount = 30;
     [SerializeField] private int strongEnemyCount = 0;
 
@@ -26,11 +26,14 @@ public class WaveManager : MonoBehaviour
     [SerializeField] private float maxSpawnInterval = 1f;
     [SerializeField] private float spawnRadius = 3f;
 
-    private readonly List<GameObject> aliveEnemies = new List<GameObject>();
+    [Header("Initialize controls")]
+    private float spawnTimer = 0f;
+    private bool waveStarted = false;
 
-   private bool waveFinished = false;
+    private readonly List<GameObject> aliveEnemies = new List<GameObject>();
+    private bool waveFinished = false;
     private int activeSpawnCoroutines = 0;
-    
+
     private void Start()
     {
         StartCoroutine(StartWave());
@@ -56,22 +59,52 @@ public class WaveManager : MonoBehaviour
         {
             StartCoroutine(SpawnBossAfterDelay());
         }
-
-       
-      
-
-      
     }
 
     private void Update()
     {
+        if (!waveStarted)
+        {
+            spawnTimer += Time.deltaTime;
+            if (spawnTimer >= 3f)
+            {
+                waveStarted = true;
+            }
+            return;
+        }
+
+        if (waveFinished) return;
+
         aliveEnemies.RemoveAll(enemy => enemy == null);
 
-        if(!waveFinished && activeSpawnCoroutines == 0 && aliveEnemies.Count == 0)
-        {
-            waveFinished = true;
+        bool hasSpawnedAll = (activeSpawnCoroutines == 0);
 
-            Debug.Log("Oleada completada");
+        if (waveStarted && hasSpawnedAll && aliveEnemies.Count == 0)
+        {
+            int totalExpectedEnemies = normalEnemyCount + strongEnemyCount + (spawnBoss ? 1 : 0);
+
+            if (totalExpectedEnemies > 0)
+            {
+                waveFinished = true;
+                Debug.Log("¡Todos los enemigos derrotados! Transicionando a la Iglesia en 4 segundos...");
+
+
+                StartCoroutine(DelayedTransitionRoutine());
+            }
+        }
+    }
+
+    private IEnumerator DelayedTransitionRoutine()
+    {
+        yield return new WaitForSeconds(4f);
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnNightCompleted();
+        }
+        else
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("ChurchScene");
         }
     }
 
@@ -93,35 +126,33 @@ public class WaveManager : MonoBehaviour
 
     private IEnumerator SpawnEnemiesCoroutine(GameObject enemyPrefab, int amount)
     {
-       activeSpawnCoroutines++;
+        activeSpawnCoroutines++;
 
         for (int i = 0; i < amount; i++)
         {
-       
-
             EnemyPortalSpawner spawnPortal = portals[Random.Range(0, portals.Length)];
 
             if (spawnPortal != null)
             {
                 Vector3 randomOffset = new Vector3(Random.Range(-spawnRadius, spawnRadius), 0f, Random.Range(-spawnRadius, spawnRadius));
-
                 Vector3 spawnPosition = spawnPortal.transform.position + randomOffset;
 
                 GameObject enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
 
+                if (!enemy.CompareTag("Enemy"))
+                {
+                    enemy.tag = "Enemy";
+                }
+
                 aliveEnemies.Add(enemy);
-
-                Debug.Log("Spawn enemigo " + (i + 1) + "/" + amount);
             }
-
-           
 
             yield return new WaitForSeconds(Random.Range(minSpawnInterval, maxSpawnInterval));
         }
 
         activeSpawnCoroutines--;
     }
-    
+
     private IEnumerator SpawnBossAfterDelay()
     {
         yield return new WaitForSeconds(bossSpawnDelay);
@@ -136,19 +167,19 @@ public class WaveManager : MonoBehaviour
         {
             GameObject boss = Instantiate(bossEnemy, bossPortal.transform.position, Quaternion.identity);
 
+            if (!boss.CompareTag("Enemy"))
+            {
+                boss.tag = "Enemy";
+            }
+
             aliveEnemies.Add(boss);
 
             Debug.Log("El jefe ha llegado");
         }
-
-        
     }
 
     public bool IsWaveFinished()
     {
         return waveFinished;
     }
-
-
-   
 }

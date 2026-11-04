@@ -40,7 +40,6 @@ public class PlayerCombat : MonoBehaviour
 
     [Header("Pistol")]
     [SerializeField] private int maxAmmo = 12;
-    [SerializeField] private float rangedAttackDistance = 30f;
     [SerializeField] private Transform weaponCannon;
     [SerializeField] private float fireRate = 0.25f;
     [SerializeField] private Bullet bullet;
@@ -65,14 +64,23 @@ public class PlayerCombat : MonoBehaviour
 
     [SerializeField] private Camera playerCamera;
     [SerializeField] private LayerMask aimLayers;
+
+    private Animator animator;
     
     
     
     private void Start()
     {
+        animator = GetComponent<Animator>();
+
         currentAmmo = maxAmmo;
 
         UpdateWeaponVisuals();
+
+        if (animator != null)
+        {
+            animator.SetInteger("WeaponType", (int)currentWeapon);
+        }
     }
 
 
@@ -89,6 +97,11 @@ public class PlayerCombat : MonoBehaviour
             currentWeapon = currentWeapon == WeaponType.Shovel ? WeaponType.Pistol : WeaponType.Shovel;
 
             UpdateWeaponVisuals();
+            
+            if(animator != null)
+            {
+                animator.SetInteger("WeaponType", (int)currentWeapon);
+            }
 
             PlayWeaponSwapSound();
 
@@ -116,32 +129,38 @@ public class PlayerCombat : MonoBehaviour
     }
 
     private void PerformShovelAttack()
-{
-
-        
-
-    if (!activeSkills.SinPiedadActive)
-    {
-        if (!stamina.ConsumeStamina(attackStaminaCost))
-            return;
-    }
-
-    PlayShovelSound();
-
-    Collider[] enemies = Physics.OverlapSphere(transform.position + transform.forward, attackRange,enemyLayer);
-
-    float damage = damageManager.GetFinalDamage();
-
-
-    foreach (Collider enemy in enemies)
     {
 
-        
-
-        Health enemyHealth = enemy.GetComponent<Health>();
-
-        if (enemyHealth != null)
+        if(animator != null)
         {
+            animator.SetInteger("AttackIndex", Random.Range(0, 3));
+            animator.SetTrigger("Attack");
+        }
+
+        
+
+        if (!activeSkills.SinPiedadActive)
+        {
+            if (!stamina.ConsumeStamina(attackStaminaCost))
+            return;
+        }
+
+        PlayShovelSound();
+
+        Collider[] enemies = Physics.OverlapSphere(transform.position + transform.forward, attackRange,enemyLayer);
+
+        float damage = damageManager.GetFinalDamage();
+
+
+        foreach (Collider enemy in enemies)
+        {
+
+        
+
+          Health enemyHealth = enemy.GetComponent<Health>();
+
+          if (enemyHealth != null)
+          {
             PlayShovelImpactSound(enemy.transform.position);
 
             bool divineAttack = damageManager.ConsumeDivineHit();
@@ -154,9 +173,9 @@ public class PlayerCombat : MonoBehaviour
             }
 
             Debug.Log( enemy.name + " recibió " + damage + " puntos de daño.");
+          }
         }
     }
-}
 
     private void OnDrawGizmosSelected()
     {
@@ -194,6 +213,11 @@ public class PlayerCombat : MonoBehaviour
 
     private void PerformPistolAttack()
     {
+        if(animator != null)
+        {
+            animator.SetTrigger("Attack");
+        }
+
         if (Time.time < nextFireTime)
             return;
 
@@ -280,19 +304,14 @@ public class PlayerCombat : MonoBehaviour
 
         AudioClip selectedClip = shovelHitClips[Random.Range(0, shovelHitClips.Length)];
 
-        GameObject tempAudio = new GameObject("ShovelImpactAudio");
+        float randomPitch = Random.Range(shovelHitMinPitch, shovelHitMaxPitch);
 
-        tempAudio.transform.position = hitPosition;
-
-        AudioSource source = tempAudio.AddComponent<AudioSource>();
-
-        source.pitch = Random.Range(shovelHitMinPitch, shovelHitMaxPitch);
-
-        source.spatialBlend = 1f;
-
-        source.PlayOneShot(selectedClip,shovelImpactVolume);
-
-        Destroy(tempAudio, selectedClip.length);
+        if(AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(selectedClip, shovelImpactVolume, randomPitch);
+        }
+           
+      
     }
 
     private void PlayWeaponSwapSound()

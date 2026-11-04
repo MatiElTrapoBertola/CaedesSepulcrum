@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 
@@ -55,7 +56,14 @@ public class HealthPotion : MonoBehaviour
 
         AudioClip selectedClip = pickupClips[Random.Range(0, pickupClips.Length)];
 
-        AudioSource.PlayClipAtPoint(selectedClip, transform.position, pickupVolume);
+        float randomPitch = Random.Range(minPitch, maxPitch);
+
+        if(AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySFX(selectedClip, pickupVolume, randomPitch);
+        }
+
+      
 
 
     }
