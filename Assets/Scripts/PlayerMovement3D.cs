@@ -139,17 +139,17 @@ public class PlayerMovement3D : MonoBehaviour
         RaycastHit hit;
         Vector3 origin = transform.position + Vector3.up * 0.2f;
 
-        // Lanzamos un rayo hacia abajo para detectar el suelo
+        
         if (Physics.Raycast(origin, Vector3.down, out hit, 1.5f))
         {
             string surfaceTag = hit.collider.tag;
 
-            // --- LÍNEA DE DEPURACIÓN (Mírala en la consola de Unity) ---
+           
             Debug.Log("Pisando objeto: " + hit.collider.name + " | Tag detectado: " + surfaceTag);
 
-            AudioClip[] selectedClips = grassClips; // Por defecto tierra
+            AudioClip[] selectedClips = grassClips; 
 
-            // Asegúrate de que el Tag aquí escrito sea exactamente igual al que pusiste en Unity
+          
             if (surfaceTag == "Cemento" || surfaceTag == "Concrete")
             {
                 selectedClips = concreteClips;

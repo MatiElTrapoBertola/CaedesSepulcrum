@@ -13,9 +13,14 @@ public class PlayerActiveSkills : MonoBehaviour
     [SerializeField] private float mensajeroCooldown = 20f;
     [SerializeField] private PlayerDamageManager damageManager;
     [SerializeField] private float blessingCooldown = 25f;
-    [SerializeField] private ParticleSystem plegariaFX;
     [SerializeField] private float sinPiedadDuration = 8f;
     [SerializeField] private float sinPiedadCooldown = 30f;
+
+    [Header("Efectos de Partículas (Habilidades)")]
+    [SerializeField] private ParticleSystem plegariaFX;     
+    [SerializeField] private ParticleSystem mensajeroFX;     
+    [SerializeField] private ParticleSystem blessingFX;     
+    [SerializeField] private ParticleSystem sinPiedadFX;    
 
     private bool canUsePlegaria = true;
     public bool canUseMensajero = true;
@@ -28,7 +33,6 @@ public class PlayerActiveSkills : MonoBehaviour
     private bool canUseSinPiedad = true;
     public bool SinPiedadActive { get; private set; }
 
-  
     public void OnPlegaria(InputAction.CallbackContext context)
     {
         if (context.performed) ActivatePlegaria();
@@ -88,12 +92,17 @@ public class PlayerActiveSkills : MonoBehaviour
         NoKnockback = true;
         movement.SpeedBoostActive = true;
 
+      
+        if (mensajeroFX != null) mensajeroFX.Play();
+
         yield return new WaitForSeconds(mensajeroDuration);
 
         movement.SpeedBoostActive = false;
         NoKnockback = false;
         InfiniteResources = false;
         isMensajeroActive = false;
+
+        if (mensajeroFX != null) mensajeroFX.Stop();
 
         yield return new WaitForSeconds(mensajeroCooldown);
         canUseMensajero = true;
@@ -117,6 +126,9 @@ public class PlayerActiveSkills : MonoBehaviour
         canUseBlessing = false;
         damageManager.ActivateBlessing();
 
+       
+        if (blessingFX != null) blessingFX.Play();
+
         yield return new WaitForSeconds(blessingCooldown);
         canUseBlessing = true;
     }
@@ -133,9 +145,13 @@ public class PlayerActiveSkills : MonoBehaviour
         SinPiedadActive = true;
         Debug.Log("Sin Piedad activada");
 
+     
+        if (sinPiedadFX != null) sinPiedadFX.Play();
+
         yield return new WaitForSeconds(sinPiedadDuration);
 
         SinPiedadActive = false;
+        if (sinPiedadFX != null) sinPiedadFX.Stop();
         Debug.Log("Sin Piedad terminada");
 
         yield return new WaitForSeconds(sinPiedadCooldown);

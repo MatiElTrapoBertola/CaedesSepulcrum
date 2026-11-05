@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3664500239682286438}
   - component: {fileID: 3596445410500879089}
   m_Layer: 0
-  m_Name: DivineExplosionFX
+  m_Name: ExplosionDivinaParticleSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
