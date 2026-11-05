@@ -59,7 +59,7 @@ public class HUD : MonoBehaviour
     {
         if (ammoCountText != null)
         {
-            ammoCountText.text =  //DEBE CONECTARSE AL MANEJO DE BALAS.
+            ammoCountText.text = ; //DEBE CONECTARSE AL MANEJO DE BALAS.
         }
     }
 }
