@@ -25,7 +25,7 @@ public class ControlAudioCementerio : MonoBehaviour
     {
         if (esIglesia) return;
 
-        // Buscamos todos los árboles con el Tag HollowTree en el mapa
+        
         GameObject[] arboles = GameObject.FindGameObjectsWithTag("HollowTree");
         GameObject arbolCercano = null; float distMin = Mathf.Infinity;
 
@@ -34,8 +34,8 @@ public class ControlAudioCementerio : MonoBehaviour
             float d = Vector3.Distance(jugador.position, a.transform.position);
             if (d < distMin) { distMin = d; arbolCercano = a; }
         }
-        // Búsqueda por la etiqueta de los Mausoleos para calcular su distancia
-        GameObject[] mausoleos = GameObject.FindGameObjectsWithTag("Mausoleum"); // Asegúrate de que tus prefabs tengan este Tag
+        
+        GameObject[] mausoleos = GameObject.FindGameObjectsWithTag("Mausoleum"); 
         GameObject mausoleoCercano = null; float distMinMausoleo = Mathf.Infinity;
 
         foreach (GameObject m in mausoleos)
@@ -44,7 +44,7 @@ public class ControlAudioCementerio : MonoBehaviour
             if (d < distMinMausoleo) { distMinMausoleo = d; mausoleoCercano = m; }
         }
 
-        // Si el jugador camina a menos de 15 metros de un Mausoleo, reproduce su sonido interno en bucle
+        
         if (distMinMausoleo < 15f && mausoleoCercano != null)
         {
             AudioSource audioMausoleo = mausoleoCercano.GetComponentInChildren<AudioSource>();
@@ -55,17 +55,17 @@ public class ControlAudioCementerio : MonoBehaviour
             }
         }
 
-        // Si el jugador camina cerca de CUALQUIER árbol (menos de 25 metros)
+        
         if (distMin < 25f && arbolCercano != null)
         {
-            // Conseguimos los componentes de audio específicos de ESTE árbol más cercano
+            
             AudioSource[] fuentesArbol = arbolCercano.GetComponentsInChildren<AudioSource>();
-            if (fuentesArbol.Length < 2) return; // Asegura que el prefab tenga los dos audios adentro
+            if (fuentesArbol.Length < 2) return; 
 
-            AudioSource gArbol = fuentesArbol[0]; // El primer AudioSource hijo (Grillo)
-            AudioSource bArbol = fuentesArbol[1]; // El segundo AudioSource hijo (Búho)
+            AudioSource gArbol = fuentesArbol[0]; 
+            AudioSource bArbol = fuentesArbol[1]; 
 
-            // 1. Control de Grillos local de este árbol
+            
             cronoGrillos += Time.deltaTime;
             if (cronoGrillos >= esperaGrillos)
             {
@@ -73,7 +73,7 @@ public class ControlAudioCementerio : MonoBehaviour
                 if (Random.value > 0.25f && !gArbol.isPlaying) { gArbol.volume = 0.5f; gArbol.Play(); }
             }
 
-            // 2. Control de Búho local de este árbol
+            
             cronoBuho += Time.deltaTime;
             if (cronoBuho >= esperaBuho)
             {
