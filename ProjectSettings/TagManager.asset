@@ -6,6 +6,9 @@ TagManager:
   tags:
   - HollowTree
   - Mausoleum
+  - Grass
+  - Concrete
+  - Enemy
   layers:
   - Default
   - TransparentFX
