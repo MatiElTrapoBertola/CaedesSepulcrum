@@ -1,7 +1,4 @@
-
 using UnityEngine;
-
-
 
 public class HealthPotion : MonoBehaviour
 {
@@ -13,36 +10,30 @@ public class HealthPotion : MonoBehaviour
     [SerializeField] private float minPitch = 0.95f;
     [SerializeField] private float maxPitch = 1.05f;
 
-
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log("Entro en la pocion: " + other.name);
 
-        Health playerHealth =
-            other.GetComponent<Health>();
+        Health playerHealth = other.GetComponent<Health>();
 
         if (playerHealth == null)
             return;
 
-        PlayerSkillsManager skillsManager =
-            other.GetComponent<PlayerSkillsManager>();
+        PlayerSkillsManager skillsManager = other.GetComponent<PlayerSkillsManager>();
 
         int bonusHealing = 0;
 
         if (skillsManager != null)
         {
-            bonusHealing =
-                skillsManager.GetPotionHealingBonus();
+            // Verificamos el bono de curación de pociones (Elixir de los Ángeles)
+            bonusHealing = skillsManager.GetPotionHealingBonus();
         }
 
-        int finalHealing =
-            healAmount + bonusHealing;
+        int finalHealing = healAmount + bonusHealing;
 
         playerHealth.Heal(finalHealing);
 
-        Debug.Log(
-            "Poción usada. Curación: " +
-            finalHealing);
+        Debug.Log("Poción usada. Curación: " + finalHealing);
 
         PlayPickupSound();
 
@@ -55,16 +46,11 @@ public class HealthPotion : MonoBehaviour
             return;
 
         AudioClip selectedClip = pickupClips[Random.Range(0, pickupClips.Length)];
-
         float randomPitch = Random.Range(minPitch, maxPitch);
 
-        if(AudioManager.Instance != null)
+        if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlaySFX(selectedClip, pickupVolume, randomPitch);
         }
-
-      
-
-
     }
 }

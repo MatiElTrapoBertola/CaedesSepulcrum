@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -5,8 +6,16 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    [Header("Progreso Actual")]
+    [Header("Actual Night")]
     [SerializeField] private int currentNight = 1;
+
+    [Header("SpawnBetweenScenes")]
+    [HideInInspector] public string spawnPointName = "";
+
+    [Header("HUD Configuration")]
+    [SerializeField] private GameObject hudPrefab;
+
+    private GameObject currentHudIstance;
 
     private void Awake()
     {
@@ -21,9 +30,42 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        string sceneName = scene.name;
+
+        if (sceneName == "MainMenu" || sceneName == "WinScene" || sceneName == "DefeatedScene")
+        {
+            if (currentHudIstance != null)
+            {
+                Destroy(currentHudIstance);
+            }
+        }
+        else
+        {
+            if (currentHudIstance == null && hudPrefab != null)
+            {
+                currentHudIstance = Instantiate(hudPrefab);
+                DontDestroyOnLoad(currentHudIstance);
+            }
+        }
+    }
+
     public void OnNightCompleted()
     {
         Debug.Log("Noche " + currentNight + " superada");
+
+        spawnPointName = "SpawnChurch";
 
         if (currentNight >= 3)
         {
@@ -45,15 +87,17 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("Nueva noche: " + currentNight);
 
+        spawnPointName = "SpawnNight";
+
         if (currentNight == 2)
         {
             Debug.Log("Intentando cargar Noche2");
-            SceneManager.LoadScene("Noche2");
+            SceneManager.LoadScene("Night 2");
         }
         else if (currentNight == 3)
         {
             Debug.Log("Intentando cargar Noche3");
-            SceneManager.LoadScene("Noche3");
+            SceneManager.LoadScene("Night 3");
         }
     }
 

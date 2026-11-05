@@ -22,7 +22,6 @@ public class HUD : MonoBehaviour
 
     private void Start()
     {
-       
         if (playerHealth == null)
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -35,13 +34,11 @@ public class HUD : MonoBehaviour
         if (playerHealth != null)
         {
             playerHealth.onHealthChanged.AddListener(OnHealthChanged);
-
-         
             OnHealthChanged(playerHealth.CurrentHealth, playerHealth.MaxHealth);
         }
         else
         {
-            Debug.LogWarning("HUD no pudo encontrar el componente Health del jugador.");
+            Debug.LogWarning("HUD no pudo encontrar el componente Health del jugador. El HUD seguirá funcionando sin romper el juego.");
         }
     }
 
@@ -56,7 +53,8 @@ public class HUD : MonoBehaviour
 
     void OnHealthChanged(float currentHealth, float maxHealth)
     {
-        if (maxHealth <= 0) return;
+        // Si las imágenes aún no están referenciadas, salimos para evitar el error
+        if (maxHealth <= 0 || fill == null || trail == null) return;
 
         float percent = currentHealth / maxHealth;
         fill.fillAmount = percent;
