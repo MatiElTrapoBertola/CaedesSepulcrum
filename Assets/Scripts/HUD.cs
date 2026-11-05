@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,7 +13,9 @@ public class HUD : MonoBehaviour
     public float trailDelay = 0.3f;
     public float trailSpeed = 0.4f;
     private Coroutine trailCoroutine;
-
+    [SerializeField] private TextMeshProUGUI enemyCount;
+    [SerializeField] private TextMeshProUGUI ammoCountText;
+    
     private void OnEnable()
     {
         PlayerEvents.onHealthChanged.AddListener(OnHealthChanged); //Hay que poner este evento en el script del jugador para que funcione!
@@ -45,4 +49,18 @@ public class HUD : MonoBehaviour
             yield return null;
         }
     }
+    public void EnemyDefeated(GameObject enemy)
+    {
+        enemyCountIndex++;
+        enemyCount.text = "Bestias Derrotadas: " + enemyCountIndex.ToString() + "";
+        Destroy(enemy); //Posible script para ir sumando a un contador de enemigos derrotados, pero no se si es necesario.
+    }
+    public void UpdateAmmoUI()
+    {
+        if (ammoCountText != null)
+        {
+            ammoCountText.text =  //DEBE CONECTARSE AL MANEJO DE BALAS.
+        }
+    }
 }
+
