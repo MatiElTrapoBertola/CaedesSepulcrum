@@ -35,10 +35,7 @@ public class PlayerMovement3D : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        moveInput = context.ReadValue<Vector2>();
-    }
+    void Start() => rb = GetComponent<Rigidbody>(); // <- Agregado
 
     public void OnSprint(InputAction.CallbackContext context)
     {

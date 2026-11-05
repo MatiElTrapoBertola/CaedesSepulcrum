@@ -4,9 +4,8 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Enemy
-  - Grass
-  - Concrete
+  - HollowTree
+  - Mausoleum
   layers:
   - Default
   - TransparentFX
