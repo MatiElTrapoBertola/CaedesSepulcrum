@@ -5,45 +5,33 @@ public class PlayerMovement3D : MonoBehaviour
 {
     [SerializeField] private float speed = 8f;
     [SerializeField] private float rotationSpeed = 200f;
-    [SerializeField] private float rayDistance = 1.2f;        
-    [SerializeField] private LayerMask detectionLayer = ~0;  
+    [SerializeField] private float rayDistance = 1.2f;
+    [SerializeField] private LayerMask detectionLayer = ~0;
 
     private Vector2 moveInput;
+    private Rigidbody rb; // <- Agregado
 
-    public void OnMove(InputAction.CallbackContext context)
+    void Start() => rb = GetComponent<Rigidbody>(); // <- Agregado
+
+    public void OnMove(InputAction.CallbackContext context) => moveInput = context.ReadValue<Vector2>();
+
+    void Update() => transform.Rotate(Vector3.up * moveInput.x * rotationSpeed * Time.deltaTime);
+
+    void FixedUpdate() // <- Cambiado a FixedUpdate para que el Rigidbody responda
     {
-        moveInput = context.ReadValue<Vector2>();
-    }
-
-    void Update()
-    {
-        float speedZ = moveInput.y;    
-        float rotationX = moveInput.x; 
-
-        transform.Rotate(Vector3.up * rotationX * rotationSpeed * Time.deltaTime);
-
+        float speedZ = moveInput.y;
         bool canMove = true;
 
         if (speedZ != 0)
         {
             Vector3 rayDirection = speedZ > 0 ? transform.forward : -transform.forward;
-            Vector3 origin = transform.position + Vector3.up * 1f;
-
-            RaycastHit hit;
-
-            if (Physics.Raycast(origin, rayDirection, out hit, rayDistance, detectionLayer))
-            {
+            if (Physics.Raycast(transform.position + Vector3.up * 1f, rayDirection, rayDistance, detectionLayer))
                 canMove = false;
-                Debug.Log("Obstáculo detectado por Raycast (" + (speedZ > 0 ? "Raycast disparado por frente" : "Raycast disparado por atrás") + "): " + hit.collider.name);
-            }
         }
 
-        if (canMove)
-        {
-            transform.Translate(Vector3.forward * speedZ * speed * Time.deltaTime);
-        }
+        // Aplica el movimiento directamente a la velocidad del Rigidbody
+        rb.linearVelocity = (canMove && speedZ != 0) ? transform.forward * speedZ * speed : new Vector3(0, rb.linearVelocity.y, 0);
     }
-
 
     private void OnDrawGizmosSelected()
     {
