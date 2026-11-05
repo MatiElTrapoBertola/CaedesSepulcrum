@@ -35,7 +35,6 @@ public class PlayerMovement3D : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    void Start() => rb = GetComponent<Rigidbody>(); // <- Agregado
 
     public void OnSprint(InputAction.CallbackContext context)
     {

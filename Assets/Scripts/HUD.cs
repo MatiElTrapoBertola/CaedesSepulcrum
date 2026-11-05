@@ -13,34 +13,71 @@ public class HUD : MonoBehaviour
     public float trailDelay = 0.3f;
     public float trailSpeed = 0.4f;
     private Coroutine trailCoroutine;
+
     [SerializeField] private TextMeshProUGUI enemyCount;
     [SerializeField] private TextMeshProUGUI ammoCountText;
-    
-    private void OnEnable()
+    [SerializeField] private Health playerHealth;
+
+    private int enemyCountIndex = 0;
+
+    private void Start()
     {
-        PlayerEvents.onHealthChanged.AddListener(OnHealthChanged); //Hay que poner este evento en el script del jugador para que funcione!
+       
+        if (playerHealth == null)
+        {
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                playerHealth = player.GetComponent<Health>();
+            }
+        }
+
+        if (playerHealth != null)
+        {
+            playerHealth.onHealthChanged.AddListener(OnHealthChanged);
+
+         
+            OnHealthChanged(playerHealth.CurrentHealth, playerHealth.MaxHealth);
+        }
+        else
+        {
+            Debug.LogWarning("HUD no pudo encontrar el componente Health del jugador.");
+        }
     }
-    private void OnDisable()
+
+    private void OnDestroy()
     {
-        PlayerEvents.onHealthChanged.RemoveListener(OnHealthChanged);
-    } 
+      
+        if (playerHealth != null)
+        {
+            playerHealth.onHealthChanged.RemoveListener(OnHealthChanged);
+        }
+    }
+
     void OnHealthChanged(float currentHealth, float maxHealth)
     {
+        if (maxHealth <= 0) return;
+
         float percent = currentHealth / maxHealth;
         fill.fillAmount = percent;
-        fill.color = colorHealth.Evaluate(percent); //Finalizar cuando se tenga el script del jugador y el evento de salud (si es que se quiere dejarla así)
+        fill.color = colorHealth.Evaluate(percent);
 
         if (trailCoroutine != null)
         {
             StopCoroutine(trailCoroutine);
         }
-        if (percent>=trail.fillAmount) 
+
+        if (percent >= trail.fillAmount)
+        {
             trail.fillAmount = percent;
-        else        
-            trailCoroutine = StartCoroutine(AnimeTraikl(percent));
-        
+        }
+        else
+        {
+            trailCoroutine = StartCoroutine(AnimeTrail(percent));
+        }
     }
-    IEnumerator AnimeTraikl(float targetAmount)
+
+    IEnumerator AnimeTrail(float targetAmount)
     {
         yield return new WaitForSeconds(trailDelay);
         while (trail.fillAmount > targetAmount)
@@ -49,18 +86,22 @@ public class HUD : MonoBehaviour
             yield return null;
         }
     }
+
     public void EnemyDefeated(GameObject enemy)
     {
         enemyCountIndex++;
-        enemyCount.text = "Bestias Derrotadas: " + enemyCountIndex.ToString() + "";
-        Destroy(enemy); //Posible script para ir sumando a un contador de enemigos derrotados, pero no se si es necesario.
+        if (enemyCount != null)
+        {
+            enemyCount.text = "Bestias Derrotadas: " + enemyCountIndex.ToString();
+        }
+        Destroy(enemy);
     }
-    public void UpdateAmmoUI()
+
+    public void UpdateAmmoUI(int currentAmmo, int maxAmmo)
     {
         if (ammoCountText != null)
         {
-            ammoCountText.text = ; //DEBE CONECTARSE AL MANEJO DE BALAS.
+            ammoCountText.text = currentAmmo + " / " + maxAmmo;
         }
     }
 }
-

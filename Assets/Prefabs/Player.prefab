@@ -1327,9 +1327,6 @@ PrefabInstance:
       addedObject: {fileID: 4869029016592920329}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ba0a6e417dcef574191e33f80a170b3c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2843770208560204132}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ba0a6e417dcef574191e33f80a170b3c, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 4752007397999085021}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ba0a6e417dcef574191e33f80a170b3c, type: 3}
       insertIndex: -1
@@ -1355,6 +1352,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ba0a6e417dcef574191e33f80a170b3c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7777342465138855664}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: ba0a6e417dcef574191e33f80a170b3c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2532311201931735224}
   m_SourcePrefab: {fileID: 100100000, guid: ba0a6e417dcef574191e33f80a170b3c, type: 3}
 --- !u!1 &7083388661663750539 stripped
 GameObject:
@@ -1388,9 +1388,9 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2843770208560204132}
+      - m_Target: {fileID: 7083388661663750539}
         m_TargetAssemblyTypeName: PlayerMovement3D, Assembly-CSharp
-        m_MethodName: OnMove
+        m_MethodName: 
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1404,9 +1404,9 @@ MonoBehaviour:
     m_ActionName: 'Player/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2843770208560204132}
+      - m_Target: {fileID: 7083388661663750539}
         m_TargetAssemblyTypeName: PlayerMovement3D, Assembly-CSharp
-        m_MethodName: OnSprint
+        m_MethodName: 
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1558,35 +1558,6 @@ CapsuleCollider:
   m_Height: 2.978497
   m_Direction: 1
   m_Center: {x: 0, y: 1.3136303, z: 0}
---- !u!114 &2843770208560204132
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7083388661663750539}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d903f124ec6b0c4b946c2c2019a77c3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  speed: 20
-  staminaCostPerSecond: 5
-  sprintMultiplier: 1.5
-  stamina: {fileID: 7042698361282058510}
-  activeSkills: {fileID: 7871778951384160809}
-  cameraTransform: {fileID: 2857142790749402139}
-  rayDistance: 1.2
-  detectionLayer:
-    serializedVersion: 2
-    m_Bits: 183
-  footstepAudioSource: {fileID: 6934439852338199510}
-  grassClips:
-  - {fileID: 8300000, guid: 3cda2f50de29f8446900fc237ecea388, type: 3}
-  concreteClips:
-  - {fileID: 8300000, guid: 237d40666790ec348ab4c5efaacc1df5, type: 3}
-  footstepInterval: 0.5
-  sprintFootstepMultiplier: 0.7
 --- !u!54 &4752007397999085021
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1670,15 +1641,18 @@ MonoBehaviour:
   health: {fileID: 28331445191709901}
   plegariaDuration: 3
   plegariaCooldown: 20
-  movement: {fileID: 2843770208560204132}
+  movement: {fileID: 0}
   stamina: {fileID: 7042698361282058510}
   mensajeroDuration: 5
   mensajeroCooldown: 20
   damageManager: {fileID: 1781960262346911046}
   blessingCooldown: 25
-  plegariaFX: {fileID: 1990905502674115455}
   sinPiedadDuration: 8
   sinPiedadCooldown: 30
+  plegariaFX: {fileID: 1990905502674115455}
+  mensajeroFX: {fileID: 0}
+  blessingFX: {fileID: 0}
+  sinPiedadFX: {fileID: 0}
   canUseMensajero: 1
   isMensajeroActive: 0
   canUseBlessing: 1
@@ -1810,6 +1784,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerKillTracker
   playerHealth: {fileID: 28331445191709901}
   skillsManager: {fileID: 5452509469370334652}
+--- !u!114 &2532311201931735224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7083388661663750539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffa17752edb9f0240a35dc5f7c2ae749, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement3D
+  speed: 8
+  staminaCostPerSecond: 20
+  sprintMultiplier: 1.5
+  stamina: {fileID: 7042698361282058510}
+  activeSkills: {fileID: 7871778951384160809}
+  cameraTransform: {fileID: 2857142790749402139}
+  rayDistance: 1.2
+  detectionLayer:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  footstepAudioSource: {fileID: 6934439852338199510}
+  grassClips: []
+  concreteClips: []
+  footstepInterval: 0.5
+  sprintFootstepMultiplier: 0.7
 --- !u!4 &7567895488793346865 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ba0a6e417dcef574191e33f80a170b3c, type: 3}
