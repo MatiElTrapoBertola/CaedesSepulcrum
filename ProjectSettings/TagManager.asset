@@ -10,13 +10,13 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Potions
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
+  - Grass
+  - Enemy
+  - Player
+  - Concrete
   - 
   - 
   - 
