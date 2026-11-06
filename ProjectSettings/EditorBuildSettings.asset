@@ -5,18 +5,18 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/MenuInicial.unity
-    guid: b0b1335fc1bcde54ba2127008cd115e8
+  - enabled: 1
+    path: Assets/Scenes/MenuInicial 1.unity
+    guid: 40cee23ff3e62fd4986ee1d8b1045cfd
   - enabled: 1
     path: Assets/Scenes/Night 1.unity
-    guid: 6461e65e85f849e4d94b709ea23baad5
+    guid: c673294efd456db42a35d8337d8c01a0
   - enabled: 1
     path: Assets/Scenes/Night 2.unity
-    guid: a4340e3854d3d2842ae5c215f91536e6
+    guid: 6461e65e85f849e4d94b709ea23baad5
   - enabled: 1
     path: Assets/Scenes/Night 3.unity
-    guid: c726fa6688ee61e45acc2efe03e4c60a
+    guid: c714b90a9ca5cb940bb0b489eedd5a0c
   - enabled: 1
     path: Assets/Scenes/ChurchScene.unity
     guid: 95a43c31ede7cdc4392e5da88cc91ecc

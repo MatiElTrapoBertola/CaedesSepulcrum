@@ -18,10 +18,10 @@ public class PlayerMovement3D : MonoBehaviour
 
     [Header("Footsteps Sound Configuration")]
     [SerializeField] private AudioSource footstepAudioSource;
-    [SerializeField] private AudioClip[] grassClips;      
-    [SerializeField] private AudioClip[] concreteClips;     
-    [SerializeField] private float footstepInterval = 0.5f;   
-    [SerializeField] private float sprintFootstepMultiplier = 0.7f; 
+    [SerializeField] private AudioClip[] grassClips;
+    [SerializeField] private AudioClip[] concreteClips;
+    [SerializeField] private float footstepInterval = 0.5f;
+    [SerializeField] private float sprintFootstepMultiplier = 0.7f;
     private float footstepTimer;
 
     private Vector2 moveInput;
@@ -32,7 +32,13 @@ public class PlayerMovement3D : MonoBehaviour
 
     private void Start()
     {
-        animator = GetComponent<Animator>();
+        // Corregido para encontrar el Animator incluso si está en un objeto hijo
+        animator = GetComponentInChildren<Animator>();
+
+        if (animator == null)
+        {
+            Debug.LogWarning("No se encontró ningún componente Animator en el jugador ni en sus hijos.");
+        }
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -71,7 +77,7 @@ public class PlayerMovement3D : MonoBehaviour
             }
             else
             {
-                if (stamina.ConsumeStamina(staminaCostPerSecond * Time.deltaTime))
+                if (stamina != null && stamina.ConsumeStamina(staminaCostPerSecond * Time.deltaTime))
                 {
                     currentSpeed *= sprintMultiplier;
                     isRunning = true;
@@ -85,6 +91,8 @@ public class PlayerMovement3D : MonoBehaviour
             animator.SetFloat("MoveY", moveInput.y, 0.1f, Time.deltaTime);
             animator.SetBool("isRunning", isRunning);
         }
+
+        if (cameraTransform == null) return;
 
         Vector3 cameraForward = cameraTransform.forward;
         Vector3 cameraRight = cameraTransform.right;
@@ -114,7 +122,10 @@ public class PlayerMovement3D : MonoBehaviour
         {
             transform.position += moveDirection.normalized * currentSpeed * Time.deltaTime;
 
-           
+            // Rotar suavemente hacia la dirección del movimiento
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 15f * Time.deltaTime);
+
             HandleFootsteps(isRunning);
         }
     }
@@ -123,14 +134,13 @@ public class PlayerMovement3D : MonoBehaviour
     {
         if (footstepAudioSource == null) return;
 
-        
         float currentInterval = isRunning ? footstepInterval * sprintFootstepMultiplier : footstepInterval;
         footstepTimer -= Time.deltaTime;
 
         if (footstepTimer <= 0f)
         {
             PlaySurfaceFootstep();
-            footstepTimer = currentInterval; 
+            footstepTimer = currentInterval;
         }
     }
 
@@ -139,17 +149,12 @@ public class PlayerMovement3D : MonoBehaviour
         RaycastHit hit;
         Vector3 origin = transform.position + Vector3.up * 0.2f;
 
-        
         if (Physics.Raycast(origin, Vector3.down, out hit, 1.5f))
         {
             string surfaceTag = hit.collider.tag;
 
-           
-            Debug.Log("Pisando objeto: " + hit.collider.name + " | Tag detectado: " + surfaceTag);
+            AudioClip[] selectedClips = grassClips;
 
-            AudioClip[] selectedClips = grassClips; 
-
-          
             if (surfaceTag == "Cemento" || surfaceTag == "Concrete")
             {
                 selectedClips = concreteClips;
@@ -165,10 +170,6 @@ public class PlayerMovement3D : MonoBehaviour
                 footstepAudioSource.pitch = Random.Range(0.9f, 1.1f);
                 footstepAudioSource.PlayOneShot(clip);
             }
-        }
-        else
-        {
-            Debug.LogWarning("El raycast de pisadas no está detectando ningún suelo hacia abajo.");
         }
     }
 

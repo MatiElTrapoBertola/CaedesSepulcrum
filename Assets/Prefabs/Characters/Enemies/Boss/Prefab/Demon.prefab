@@ -67,7 +67,7 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: f4c384e0dbc4d5841bdb746017499020, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: e45808ec1c80e7841b70893b0cf132a1, type: 2}
+      objectReference: {fileID: 9100000, guid: 0f7c24cfddf06334a9366cd5bdbbfd17, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -78,7 +78,24 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4c384e0dbc4d5841bdb746017499020, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3001163623335078474}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4c384e0dbc4d5841bdb746017499020, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -3955297620260194560}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4c384e0dbc4d5841bdb746017499020, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 595817335761289539}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4c384e0dbc4d5841bdb746017499020, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 388146198631258047}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f4c384e0dbc4d5841bdb746017499020, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 347905188402371745}
   m_SourcePrefab: {fileID: 100100000, guid: f4c384e0dbc4d5841bdb746017499020, type: 3}
+--- !u!95 &3017467947386013201 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: f4c384e0dbc4d5841bdb746017499020, type: 3}
+  m_PrefabInstance: {fileID: 8685938130321324928}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8380019562118088401 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f4c384e0dbc4d5841bdb746017499020, type: 3}
@@ -156,3 +173,92 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!195 &-3955297620260194560
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8380019562118088401}
+  m_Enabled: 1
+  m_AgentTypeID: -1923039037
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
+--- !u!114 &595817335761289539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8380019562118088401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19d1aa089960d564497fa66689bacac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
+  player: {fileID: 0}
+  chaseRange: 15
+  runThreshold: 3.5
+  attackRange: 2
+  attackDamage: 10
+  attackCooldown: 1
+--- !u!114 &388146198631258047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8380019562118088401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 194dbd61e28addc4ea7b35a5b0e01cf4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Health
+  skillsManager: {fileID: 0}
+  maxHealth: 100
+  currentHealth: 0
+  animator: {fileID: 3017467947386013201}
+  healthRegenPerSecond: 0
+  isInvulnerable: 0
+  damageReduction: 0
+  onHealthChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  onTakeDamage:
+    m_PersistentCalls:
+      m_Calls: []
+  onDeath:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &347905188402371745
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8380019562118088401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d245e5a19bee1184a9f1e4dfce06ccab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathHandler
+  lootPrefab: {fileID: 0}
+  resourceDropAmount: 2
+  healthPotionPrefab: {fileID: 0}
+  potionDropChance: 35
+  dropRadius: 2
+  deathVolume: 1
+  deathClips: []
+  minPitch: 0.95
+  maxPitch: 1.05

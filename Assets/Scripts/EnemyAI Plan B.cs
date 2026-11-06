@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -9,6 +8,7 @@ public class EnemyAI : MonoBehaviour
 
     private NavMeshAgent agent;
     private Health playerHealth;
+    private Health zombieHealth;
     private Animator animator;
 
     [Header("Detection")]
@@ -25,16 +25,43 @@ public class EnemyAI : MonoBehaviour
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
+
+        // Búsqueda segura del Animator en el modelo hijo del zombi
+        animator = GetComponentInChildren<Animator>();
+        if (animator == null)
+        {
+            animator = GetComponent<Animator>();
+        }
+
+        // Obtenemos la vida propia del zombi para escuchar eventos de daño y muerte
+        zombieHealth = GetComponent<Health>();
+    }
+
+    private void OnEnable()
+    {
+        if (zombieHealth != null)
+        {
+            zombieHealth.onTakeDamage.AddListener(TriggerHitAnimation);
+            zombieHealth.onDeath.AddListener(TriggerDeathAnimation);
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (zombieHealth != null)
+        {
+            zombieHealth.onTakeDamage.RemoveListener(TriggerHitAnimation);
+            zombieHealth.onDeath.RemoveListener(TriggerDeathAnimation);
+        }
     }
 
     private void Start()
     {
-        if(player == null)
+        if (player == null)
         {
             GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
 
-            if(playerObject != null)
+            if (playerObject != null)
             {
                 player = playerObject.transform;
                 playerHealth = playerObject.GetComponent<Health>();
@@ -44,6 +71,13 @@ public class EnemyAI : MonoBehaviour
 
     private void Update()
     {
+        // Si el zombi está muerto, detenemos su movimiento y lógica
+        if (zombieHealth != null && zombieHealth.IsDead)
+        {
+            agent.ResetPath();
+            return;
+        }
+
         if (player == null)
             return;
 
@@ -64,7 +98,6 @@ public class EnemyAI : MonoBehaviour
         }
 
         UpdateAnimatorParameters();
-        
     }
 
     private void UpdateAnimatorParameters()
@@ -87,18 +120,30 @@ public class EnemyAI : MonoBehaviour
 
         nextAttackTime = Time.time + attackCooldown;
 
-        if(animator != null)
+        if (animator != null)
         {
-            animator.SetInteger("AttackIndex", Random.Range(0,2));
-            animator.SetTrigger("Attack");
+            animator.SetTrigger("ZombieAttack");
         }
 
-        if(playerHealth != null)
+        if (playerHealth != null)
         {
             playerHealth.TakeDamage(attackDamage);
         }
     }
 
+    private void TriggerHitAnimation()
+    {
+        if (animator != null)
+        {
+            animator.SetTrigger("ZombieHit");
+        }
+    }
 
-   
+    private void TriggerDeathAnimation()
+    {
+        if (animator != null)
+        {
+            animator.SetTrigger("ZombieDeath");
+        }
+    }
 }
