@@ -27,13 +27,9 @@ public class PlayerMovement3D : MonoBehaviour
     private Vector2 moveInput;
     private bool isSprintPressed;
     private Animator animator;
+    private Rigidbody rb;
 
     public bool SpeedBoostActive { get; set; }
-
-    private void Start()
-    {
-        animator = GetComponent<Animator>();
-    }
 
     void Start() => rb = GetComponent<Rigidbody>(); // <- Agregado
 
