@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ChurchNPCInteraction : MonoBehaviour
 {
@@ -8,7 +9,6 @@ public class ChurchNPCInteraction : MonoBehaviour
 
     private Transform playerTransform;
     private ThirdPersonCamera cameraScript;
-
     private bool isShopOpen = false;
 
     private void Start()
@@ -39,7 +39,6 @@ public class ChurchNPCInteraction : MonoBehaviour
         {
             playerTransform = player.transform;
 
-            // Buscar automáticamente la cámara del jugador
             cameraScript = FindFirstObjectByType<ThirdPersonCamera>();
 
             if (cameraScript != null)
@@ -86,14 +85,12 @@ public class ChurchNPCInteraction : MonoBehaviour
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
-
             SetPlayerControlsActive(false);
         }
         else
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
-
             SetPlayerControlsActive(true);
         }
     }
@@ -122,6 +119,12 @@ public class ChurchNPCInteraction : MonoBehaviour
     {
         if (playerTransform == null)
             return;
+
+        PlayerInput playerInput =
+            playerTransform.GetComponent<PlayerInput>();
+
+        if (playerInput != null)
+            playerInput.enabled = isActive;
 
         PlayerMovement3D movementScript =
             playerTransform.GetComponent<PlayerMovement3D>();

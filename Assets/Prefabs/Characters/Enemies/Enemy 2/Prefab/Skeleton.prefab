@@ -30,15 +30,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 682a9a06d06913d449ece31edfff4e8f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 8.634
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 682a9a06d06913d449ece31edfff4e8f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.267
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 682a9a06d06913d449ece31edfff4e8f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 4.647
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 682a9a06d06913d449ece31edfff4e8f, type: 3}
       propertyPath: m_LocalRotation.w
@@ -257,9 +257,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 1.8626437
+  m_Height: 1.6376556
   m_Direction: 1
-  m_Center: {x: 0, y: 0.8752125, z: 0}
+  m_Center: {x: 0, y: 0.987705, z: 0}
 --- !u!23 &9179210274054774522
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -322,10 +322,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
   player: {fileID: 0}
-  chaseRange: 15
+  chaseRange: 30
   runThreshold: 0.5
   attackRange: 1.8
-  attackDamage: 15
+  attackDamage: 25
   attackCooldown: 2.5
   attackDuration: 1.2
 --- !u!114 &8067255284070237515
@@ -341,8 +341,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
   skillsManager: {fileID: 0}
-  maxHealth: 100
-  currentHealth: 0
+  maxHealth: 180
+  currentHealth: 180
   animator: {fileID: 5818671001812039153}
   healthRegenPerSecond: 0
   isInvulnerable: 0
@@ -379,7 +379,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathHandler
   lootPrefab: {fileID: 0}
-  resourceDropAmount: 2
+  resourceDropAmount: 15
   healthPotionPrefab: {fileID: 7859597006823311159, guid: 11f1bd16d0da2b64daaf4de74d13437b, type: 3}
   potionDropChance: 35
   dropRadius: 2

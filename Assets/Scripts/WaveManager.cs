@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
+
 using UnityEngine.InputSystem.HID;
 
 public class WaveManager : MonoBehaviour
@@ -169,17 +171,40 @@ public class WaveManager : MonoBehaviour
 
             if (spawnPortal != null)
             {
-                Vector3 randomOffset = new Vector3(Random.Range(-spawnRadius, spawnRadius), 0f, Random.Range(-spawnRadius, spawnRadius));
-                Vector3 spawnPosition = spawnPortal.transform.position + randomOffset;
+                Vector3 randomOffset = new Vector3(
+     Random.Range(-spawnRadius, spawnRadius),
+     0f,
+     Random.Range(-spawnRadius, spawnRadius));
 
-                GameObject enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
+                Vector3 desiredPosition =
+                    spawnPortal.transform.position + randomOffset;
 
-                if (!enemy.CompareTag("Enemy"))
+                NavMeshHit hit;
+
+                if (NavMesh.SamplePosition(
+                        desiredPosition,
+                        out hit,
+                        5f,
+                        NavMesh.AllAreas))
                 {
-                    enemy.tag = "Enemy";
-                }
+                    GameObject enemy = Instantiate(
+                        enemyPrefab,
+                        hit.position,
+                        Quaternion.identity);
 
-                aliveEnemies.Add(enemy);
+                    if (!enemy.CompareTag("Enemy"))
+                    {
+                        enemy.tag = "Enemy";
+                    }
+
+                    aliveEnemies.Add(enemy);
+                }
+                else
+                {
+                    Debug.LogWarning(
+                        "No se encontró NavMesh cerca del portal " +
+                        spawnPortal.name);
+                }
             }
 
             yield return new WaitForSeconds(Random.Range(minSpawnInterval, maxSpawnInterval));
@@ -200,16 +225,28 @@ public class WaveManager : MonoBehaviour
 
         if (bossPortal != null)
         {
-            GameObject boss = Instantiate(bossEnemy, bossPortal.transform.position, Quaternion.identity);
+            NavMeshHit hit;
 
-            if (!boss.CompareTag("Enemy"))
+            if (NavMesh.SamplePosition(
+                    bossPortal.transform.position,
+                    out hit,
+                    5f,
+                    NavMesh.AllAreas))
             {
-                boss.tag = "Enemy";
+                GameObject boss = Instantiate(
+                    bossEnemy,
+                    hit.position,
+                    Quaternion.identity);
+
+                if (!boss.CompareTag("Enemy"))
+                {
+                    boss.tag = "Enemy";
+                }
+
+                aliveEnemies.Add(boss);
+
+                Debug.Log("El jefe ha llegado");
             }
-
-            aliveEnemies.Add(boss);
-
-            Debug.Log("El jefe ha llegado");
         }
     }
 

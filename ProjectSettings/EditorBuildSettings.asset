@@ -13,13 +13,31 @@ EditorBuildSettings:
     guid: c673294efd456db42a35d8337d8c01a0
   - enabled: 1
     path: Assets/Scenes/Night 2.unity
-    guid: 6461e65e85f849e4d94b709ea23baad5
+    guid: 3667fb24c40ffa04089973f4cba525d9
   - enabled: 1
     path: Assets/Scenes/Night 3.unity
-    guid: c714b90a9ca5cb940bb0b489eedd5a0c
+    guid: 463b094f90469614f9899934fef76c5a
+  - enabled: 1
+    path: Assets/Scenes/Night 4.unity
+    guid: 20936472fa407c24ea3e685ea1bd5128
+  - enabled: 1
+    path: Assets/Scenes/Night 5.unity
+    guid: 6425cac4b38fb9047bc5ec8dfa4d3606
+  - enabled: 1
+    path: Assets/Scenes/Night 6.unity
+    guid: 50bd090ef8a833e4d8782db70f7bf107
+  - enabled: 1
+    path: Assets/Scenes/Night 7.unity
+    guid: ab627b2411260b7479f381ee00d20b71
   - enabled: 1
     path: Assets/Scenes/ChurchScene.unity
     guid: 95a43c31ede7cdc4392e5da88cc91ecc
+  - enabled: 1
+    path: Assets/Scenes/Victory.unity
+    guid: e0ae24690ba078c4e8c9570a5cdcbfaa
+  - enabled: 1
+    path: Assets/Scenes/Defeat.unity
+    guid: c787ab987d15a9d4ab2907fce53b5ddd
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

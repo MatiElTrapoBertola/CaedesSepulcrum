@@ -1953,7 +1953,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9feed4919ea01b4aa25ad4fc1be40ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerResources
-  materials: 1000
+  materials: 0
 --- !u!114 &7777342465138855664
 MonoBehaviour:
   m_ObjectHideFlags: 0

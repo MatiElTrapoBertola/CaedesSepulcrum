@@ -279,8 +279,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Health
   skillsManager: {fileID: 0}
-  maxHealth: 100
-  currentHealth: 100
+  maxHealth: 80
+  currentHealth: 80
   animator: {fileID: 3009349748472012247}
   healthRegenPerSecond: 0
   isInvulnerable: 0
@@ -317,7 +317,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDeathHandler
   lootPrefab: {fileID: 0}
-  resourceDropAmount: 2
+  resourceDropAmount: 3
   healthPotionPrefab: {fileID: 7859597006823311159, guid: 11f1bd16d0da2b64daaf4de74d13437b, type: 3}
   potionDropChance: 35
   dropRadius: 2
@@ -360,7 +360,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
   player: {fileID: 0}
-  chaseRange: 15
+  chaseRange: 30
   runThreshold: 0.5
   attackRange: 1.8
   attackDamage: 10

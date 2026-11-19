@@ -126,6 +126,8 @@ public class HUD : MonoBehaviour
     public void SetTotalEnemies(int total)
     {
         totalEnemies = total;
+        enemiesDefeated = 0;
+
         RefreshEnemyCounter();
     }
 

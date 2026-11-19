@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class EnemyAI : MonoBehaviour
     private float nextAttackTime;
 
     private bool isAttacking;
+
 
     private void Awake()
     {
@@ -60,33 +62,56 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+
+
     private void Start()
     {
         if (player == null)
         {
-            GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+            GameObject playerObject =
+                GameObject.FindGameObjectWithTag("Player");
 
             if (playerObject != null)
             {
                 player = playerObject.transform;
-                playerHealth = playerObject.GetComponent<Health>();
+                playerHealth =
+                    playerObject.GetComponent<Health>();
+            }
+        }
+
+        if (agent != null)
+        {
+            NavMeshHit hit;
+
+            if (NavMesh.SamplePosition(
+                transform.position,
+                out hit,
+                10f,
+                NavMesh.AllAreas))
+            {
+                agent.Warp(hit.position);
             }
         }
     }
-
     private void Update()
     {
-        // Si el zombi está muerto, detenemos su movimiento y lógica
+        if (agent == null || !agent.isOnNavMesh)
+            return;
+
         if (zombieHealth != null && zombieHealth.IsDead)
         {
-            agent.ResetPath();
+            if (agent.hasPath)
+                agent.ResetPath();
+
             return;
         }
 
         if (player == null)
             return;
 
-        float distance = Vector3.Distance(transform.position, player.position);
+        float distance = Vector3.Distance(
+            transform.position,
+            player.position);
 
         if (!isAttacking)
         {
@@ -96,7 +121,8 @@ public class EnemyAI : MonoBehaviour
             }
             else
             {
-                agent.ResetPath();
+                if (agent.hasPath)
+                    agent.ResetPath();
             }
         }
 
@@ -167,6 +193,7 @@ public class EnemyAI : MonoBehaviour
     }
 
     private int attackNumber = 0;
+
     private System.Collections.IEnumerator AttackRoutine()
     {
         attackNumber++;
@@ -187,7 +214,7 @@ public class EnemyAI : MonoBehaviour
 
         yield return new WaitForSeconds(attackDuration);
 
-        if(agent != null && agent.isActiveAndEnabled)
+        if(agent != null && agent.isActiveAndEnabled && agent.isOnNavMesh)
         {
             agent.isStopped = false;
         }
