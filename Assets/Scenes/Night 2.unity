@@ -1345,10 +1345,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4823611560957575926, guid: b23f5dd810c30f0438acaa14322b7f08, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -7012300863965344153, guid: 223affbe7e74e39458fea894112c3917, type: 2}
     - target: {fileID: 5624167609205516785, guid: b23f5dd810c30f0438acaa14322b7f08, type: 3}
       propertyPath: m_Name
       value: Aspen_HealthyLarge (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 8466857660523524763, guid: b23f5dd810c30f0438acaa14322b7f08, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -7012300863965344153, guid: 223affbe7e74e39458fea894112c3917, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1911,6 +1919,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 491235627}
+    - target: {fileID: 8223842660873913347, guid: 6a54f778c6e18e149af7276f34c157c7, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -7012300863965344153, guid: 223affbe7e74e39458fea894112c3917, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5431,10 +5443,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4823611560957575926, guid: b23f5dd810c30f0438acaa14322b7f08, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -7012300863965344153, guid: 223affbe7e74e39458fea894112c3917, type: 2}
     - target: {fileID: 5624167609205516785, guid: b23f5dd810c30f0438acaa14322b7f08, type: 3}
       propertyPath: m_Name
       value: Aspen_HealthyLarge (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8466857660523524763, guid: b23f5dd810c30f0438acaa14322b7f08, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -7012300863965344153, guid: 223affbe7e74e39458fea894112c3917, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7109,6 +7129,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 29725171}
+    - target: {fileID: 8223842660873913347, guid: 6a54f778c6e18e149af7276f34c157c7, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -7012300863965344153, guid: 223affbe7e74e39458fea894112c3917, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -13945,6 +13969,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 820683875}
+    - target: {fileID: 8223842660873913347, guid: 6a54f778c6e18e149af7276f34c157c7, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -7012300863965344153, guid: 223affbe7e74e39458fea894112c3917, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -18151,10 +18179,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4823611560957575926, guid: b23f5dd810c30f0438acaa14322b7f08, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -7012300863965344153, guid: 223affbe7e74e39458fea894112c3917, type: 2}
     - target: {fileID: 5624167609205516785, guid: b23f5dd810c30f0438acaa14322b7f08, type: 3}
       propertyPath: m_Name
       value: Aspen_HealthyLarge
       objectReference: {fileID: 0}
+    - target: {fileID: 8466857660523524763, guid: b23f5dd810c30f0438acaa14322b7f08, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -7012300863965344153, guid: 223affbe7e74e39458fea894112c3917, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -18555,6 +18591,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 106334003}
+    - target: {fileID: 8223842660873913347, guid: 6a54f778c6e18e149af7276f34c157c7, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -7012300863965344153, guid: 223affbe7e74e39458fea894112c3917, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -30915,10 +30955,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4823611560957575926, guid: b23f5dd810c30f0438acaa14322b7f08, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -7012300863965344153, guid: 223affbe7e74e39458fea894112c3917, type: 2}
     - target: {fileID: 5624167609205516785, guid: b23f5dd810c30f0438acaa14322b7f08, type: 3}
       propertyPath: m_Name
       value: Aspen_HealthyLarge (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 8466857660523524763, guid: b23f5dd810c30f0438acaa14322b7f08, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -7012300863965344153, guid: 223affbe7e74e39458fea894112c3917, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -31914,6 +31962,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 573331179}
+    - target: {fileID: 8223842660873913347, guid: 6a54f778c6e18e149af7276f34c157c7, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -7012300863965344153, guid: 223affbe7e74e39458fea894112c3917, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -35957,6 +36009,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 264967400}
+    - target: {fileID: 8223842660873913347, guid: 6a54f778c6e18e149af7276f34c157c7, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -7012300863965344153, guid: 223affbe7e74e39458fea894112c3917, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -47697,6 +47753,10 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 275853954}
+    - target: {fileID: 8223842660873913347, guid: 6a54f778c6e18e149af7276f34c157c7, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: -7012300863965344153, guid: 223affbe7e74e39458fea894112c3917, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
