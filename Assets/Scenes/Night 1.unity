@@ -799,7 +799,7 @@ PrefabInstance:
       objectReference: {fileID: 967128274135348529, guid: 154b8f784ffcf59439eb50fa074af55b, type: 3}
     - target: {fileID: 2239424169213201932, guid: bdb3f77311a3c3945bc1110fa4d87be7, type: 3}
       propertyPath: bossSpawnDelay
-      value: 0
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2239424169213201932, guid: bdb3f77311a3c3945bc1110fa4d87be7, type: 3}
       propertyPath: maxSpawnInterval
@@ -47141,6 +47141,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1062660993}
+    - target: {fileID: 5091470391465725259, guid: d304892f04d649f4597619b311674665, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5959510385776058216, guid: d304892f04d649f4597619b311674665, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -47219,6 +47223,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5959510385776058216, guid: d304892f04d649f4597619b311674665, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7913422574351606567, guid: d304892f04d649f4597619b311674665, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

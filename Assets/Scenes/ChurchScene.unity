@@ -3541,9 +3541,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28ab3ae464bdd71409c848e5d5d408d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenu
-  pausePanel: {fileID: 0}
-  controlsPanel: {fileID: 0}
-  crosshair: {fileID: 0}
+  pausePanel: {fileID: 661148377}
+  controlsPanel: {fileID: 661148376}
+  crosshair: {fileID: 661148378}
 --- !u!4 &537270241
 Transform:
   m_ObjectHideFlags: 0
@@ -4539,6 +4539,21 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d304892f04d649f4597619b311674665, type: 3}
+--- !u!1 &661148376 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7913422574351606567, guid: d304892f04d649f4597619b311674665, type: 3}
+  m_PrefabInstance: {fileID: 661148375}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &661148377 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5091470391465725259, guid: d304892f04d649f4597619b311674665, type: 3}
+  m_PrefabInstance: {fileID: 661148375}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &661148378 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1390273180890659439, guid: d304892f04d649f4597619b311674665, type: 3}
+  m_PrefabInstance: {fileID: 661148375}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &681762295
 GameObject:
   m_ObjectHideFlags: 0

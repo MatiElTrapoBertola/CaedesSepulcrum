@@ -360,7 +360,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
   player: {fileID: 0}
-  chaseRange: 30
+  chaseRange: 1000
   runThreshold: 0.5
   attackRange: 1.8
   attackDamage: 10
