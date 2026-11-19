@@ -13,14 +13,16 @@ public class PlayerActiveSkills : MonoBehaviour
     [SerializeField] private float mensajeroCooldown = 20f;
     [SerializeField] private PlayerDamageManager damageManager;
     [SerializeField] private float blessingCooldown = 25f;
+    [SerializeField] private float blessingFXDuration = 3f;
+
     [SerializeField] private float sinPiedadDuration = 8f;
     [SerializeField] private float sinPiedadCooldown = 30f;
 
     [Header("Efectos de Partículas (Habilidades)")]
-    [SerializeField] private ParticleSystem plegariaFX;     
-    [SerializeField] private ParticleSystem mensajeroFX;     
-    [SerializeField] private ParticleSystem blessingFX;     
-    [SerializeField] private ParticleSystem sinPiedadFX;    
+    [SerializeField] private GameObject plegariaFXPrefab;
+    [SerializeField] private GameObject mensajeroFXPrefab;
+    [SerializeField] private GameObject blessingFXPrefab;
+    [SerializeField] private GameObject sinPiedadFXPrefab;
 
     private bool canUsePlegaria = true;
     public bool canUseMensajero = true;
@@ -32,6 +34,16 @@ public class PlayerActiveSkills : MonoBehaviour
     public bool canUseBlessing = true;
     private bool canUseSinPiedad = true;
     public bool SinPiedadActive { get; private set; }
+    public float PlegariaCooldownRemaining { get; private set; }
+    public float MensajeroCooldownRemaining { get; private set; }
+    public float BlessingCooldownRemaining { get; private set; }
+    public float SinPiedadCooldownRemaining { get; private set; }
+    public float PlegariaCooldown => plegariaCooldown;
+    public float MensajeroCooldown => mensajeroCooldown;
+    public float BlessingCooldown => blessingCooldown;
+    public float SinPiedadCooldown => sinPiedadCooldown;
+    
+
 
     public void OnPlegaria(InputAction.CallbackContext context)
     {
@@ -62,18 +74,22 @@ public class PlayerActiveSkills : MonoBehaviour
     private IEnumerator PlegariaCoroutine()
     {
         canUsePlegaria = false;
+
         IsInvulnerable = true;
 
-        if (plegariaFX != null) plegariaFX.Play();
+        SpawnSkillFX(plegariaFXPrefab, plegariaDuration);
+
         health.SetInvulnerable(true);
 
         yield return new WaitForSeconds(plegariaDuration);
 
         health.SetInvulnerable(false);
-        if (plegariaFX != null) plegariaFX.Stop();
+
+
         IsInvulnerable = false;
 
-        yield return new WaitForSeconds(plegariaCooldown);
+        yield return StartCoroutine(CooldownRoutine(plegariaCooldown, value => PlegariaCooldownRemaining = value));
+
         canUsePlegaria = true;
     }
 
@@ -86,25 +102,33 @@ public class PlayerActiveSkills : MonoBehaviour
     private IEnumerator MensajeroConPrisaCoroutine()
     {
         canUseMensajero = false;
+
         isMensajeroActive = true;
+
         stamina.FillStamina();
+
         InfiniteResources = true;
+
         NoKnockback = true;
+
         movement.SpeedBoostActive = true;
 
-      
-        if (mensajeroFX != null) mensajeroFX.Play();
+
+        SpawnSkillFX(mensajeroFXPrefab, mensajeroDuration);
 
         yield return new WaitForSeconds(mensajeroDuration);
 
         movement.SpeedBoostActive = false;
+
         NoKnockback = false;
+
         InfiniteResources = false;
+
         isMensajeroActive = false;
 
-        if (mensajeroFX != null) mensajeroFX.Stop();
 
-        yield return new WaitForSeconds(mensajeroCooldown);
+        yield return StartCoroutine(CooldownRoutine(mensajeroCooldown, value => MensajeroCooldownRemaining = value));
+
         canUseMensajero = true;
     }
 
@@ -124,12 +148,14 @@ public class PlayerActiveSkills : MonoBehaviour
     private IEnumerator BlessingCoroutine()
     {
         canUseBlessing = false;
+
         damageManager.ActivateBlessing();
 
-       
-        if (blessingFX != null) blessingFX.Play();
 
-        yield return new WaitForSeconds(blessingCooldown);
+        SpawnSkillFX(blessingFXPrefab, blessingFXDuration);
+
+        yield return StartCoroutine(CooldownRoutine(blessingCooldown, value => BlessingCooldownRemaining = value));
+
         canUseBlessing = true;
     }
 
@@ -142,19 +168,54 @@ public class PlayerActiveSkills : MonoBehaviour
     private IEnumerator SinPiedadCoroutine()
     {
         canUseSinPiedad = false;
+
         SinPiedadActive = true;
+
         Debug.Log("Sin Piedad activada");
 
-     
-        if (sinPiedadFX != null) sinPiedadFX.Play();
+
+        SpawnSkillFX(sinPiedadFXPrefab, sinPiedadDuration);
 
         yield return new WaitForSeconds(sinPiedadDuration);
 
         SinPiedadActive = false;
-        if (sinPiedadFX != null) sinPiedadFX.Stop();
+
         Debug.Log("Sin Piedad terminada");
 
-        yield return new WaitForSeconds(sinPiedadCooldown);
+        yield return StartCoroutine(CooldownRoutine(sinPiedadCooldown, value => SinPiedadCooldownRemaining = value));
+
         canUseSinPiedad = true;
     }
+
+    private IEnumerator CooldownRoutine(float duration, System.Action<float> setValue)
+    {
+        float timer = duration;
+
+        while(timer > 0)
+        {
+            setValue(timer);
+
+            timer -= Time.deltaTime;
+
+            yield return null;
+        }
+
+        setValue(0);
+    }
+
+    private GameObject SpawnSkillFX(GameObject prefab, float duration)
+    {
+        if (prefab == null)
+            return null;
+
+        GameObject fx = Instantiate(
+            prefab,
+            transform
+        );
+
+        Destroy(fx, duration);
+
+        return fx;
+    }
+
 }

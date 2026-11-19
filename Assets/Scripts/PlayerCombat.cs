@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -70,6 +71,14 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private LayerMask aimLayers;
 
     private Animator animator;
+    private HUD hud;
+
+    [Header("Attack Cooldown")]
+    [SerializeField] private float shovelAttackCooldown = 0.9f;
+
+    private bool isAttacking;
+
+    public bool IsAttacking => isAttacking;
 
     private void Start()
     {
@@ -80,13 +89,25 @@ public class PlayerCombat : MonoBehaviour
             Debug.LogWarning("PlayerCombat no encontró ningún Animator en el jugador ni en sus hijos.");
         }
 
+        hud = FindFirstObjectByType<HUD>();
+
         currentAmmo = maxAmmo;
+
+        if (hud != null)
+        {
+            hud.UpdateAmmoUI(currentAmmo, maxAmmo);
+        }
+
         UpdateWeaponVisuals();
 
         if (animator != null)
         {
             animator.SetInteger("WeaponType", (int)currentWeapon);
         }
+
+        
+
+       
     }
 
     public enum WeaponType
@@ -137,6 +158,17 @@ public class PlayerCombat : MonoBehaviour
 
     private void PerformShovelAttack()
     {
+        if (isAttacking)
+            return;
+
+        if (activeSkills == null || !activeSkills.SinPiedadActive)
+        {
+            if (stamina != null && !stamina.ConsumeStamina(attackStaminaCost))
+                return;
+        }
+
+        StartCoroutine(AttackCooldown());
+
         if (animator != null)
         {
             int randomCombo = Random.Range(0, 3);
@@ -155,35 +187,13 @@ public class PlayerCombat : MonoBehaviour
             }
         }
 
-        if (activeSkills == null || !activeSkills.SinPiedadActive)
-        {
-            if (stamina != null && !stamina.ConsumeStamina(attackStaminaCost))
-                return;
-        }
-
         PlayShovelSound();
 
-        Collider[] enemies = Physics.OverlapSphere(transform.position + transform.forward, attackRange, enemyLayer);
-        float damage = damageManager != null ? damageManager.GetFinalDamage() : 10f;
 
-        foreach (Collider enemy in enemies)
-        {
-            Health enemyHealth = enemy.GetComponent<Health>();
 
-            if (enemyHealth != null)
-            {
-                PlayShovelImpactSound(enemy.transform.position);
-                bool divineAttack = damageManager != null && damageManager.ConsumeDivineHit();
-
-                enemyHealth.TakeDamage(damage);
-
-                if (divineAttack)
-                {
-                    CreateDivineExplosion(enemy.transform.position);
-                }
-            }
-        }
     }
+
+
 
     private void PerformPistolAttack()
     {
@@ -206,6 +216,11 @@ public class PlayerCombat : MonoBehaviour
             }
 
             currentAmmo--;
+
+            if (hud != null)
+            {
+                hud.UpdateAmmoUI(currentAmmo, maxAmmo);
+            }
         }
 
         if (bullet != null && weaponCannon != null && playerCamera != null)
@@ -246,6 +261,12 @@ public class PlayerCombat : MonoBehaviour
     public void Reload()
     {
         currentAmmo = maxAmmo;
+
+        if (hud != null)
+        {
+            hud.UpdateAmmoUI(currentAmmo, maxAmmo);
+        }
+
         PlayReloadSound();
         Debug.Log("Recargando");
     }
@@ -301,5 +322,58 @@ public class PlayerCombat : MonoBehaviour
     {
         if (shovelObject != null) shovelObject.SetActive(currentWeapon == WeaponType.Shovel);
         if (pistolObject != null) pistolObject.SetActive(currentWeapon == WeaponType.Pistol);
+    }
+
+    private System.Collections.IEnumerator AttackCooldown()
+    {
+        isAttacking = true;
+
+        yield return new WaitForSeconds(shovelAttackCooldown);
+
+        isAttacking = false;
+    }
+
+    public void DealShovelDamage()
+    {
+        Debug.Log("EVENTO ACTIVADO");
+
+        Collider[] enemies = Physics.OverlapSphere(transform.position + transform.forward, attackRange, enemyLayer);
+
+        Debug.Log("Enemigos encontrados: " + enemies.Length);
+
+        foreach (Collider collider in enemies)
+        {
+            Debug.Log("Golpeando: " + collider.name);
+
+            Health enemyHealth = collider.GetComponentInParent<Health>();
+
+            Debug.Log("Health encontrado: " + enemyHealth);
+
+            if (enemyHealth != null)
+            {
+                Debug.Log("Health detectado en: " + enemyHealth.gameObject.name);
+
+                float damage = damageManager != null ? damageManager.GetFinalDamage() : 10f;
+
+                Debug.Log("Dano de pala: " + damage);
+
+                enemyHealth.TakeDamage(damage);
+
+                PlayShovelImpactSound(collider.transform.position);
+
+                KnockbackReceiver knockback =
+                    enemyHealth.GetComponent<KnockbackReceiver>();
+
+                if (knockback != null)
+                {
+                    knockback.ApplyKnockback(
+                        transform.position,
+                        6f);
+                }
+            }
+        }
+
+
+
     }
 }

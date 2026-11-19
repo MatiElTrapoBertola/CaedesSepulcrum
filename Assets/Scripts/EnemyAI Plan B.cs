@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -18,9 +19,13 @@ public class EnemyAI : MonoBehaviour
     [Header("Attack")]
     [SerializeField] private float attackRange = 2f;
     [SerializeField] private float attackDamage = 10f;
-    [SerializeField] private float attackCooldown = 1f;
+    [SerializeField] private float attackCooldown = 2.5f;
+
+    [SerializeField] private float attackDuration = 1.2f;
 
     private float nextAttackTime;
+
+    private bool isAttacking;
 
     private void Awake()
     {
@@ -83,13 +88,16 @@ public class EnemyAI : MonoBehaviour
 
         float distance = Vector3.Distance(transform.position, player.position);
 
-        if (distance <= chaseRange)
+        if (!isAttacking)
         {
-            agent.SetDestination(player.position);
-        }
-        else
-        {
-            agent.ResetPath();
+            if (distance <= chaseRange)
+            {
+                agent.SetDestination(player.position);
+            }
+            else
+            {
+                agent.ResetPath();
+            }
         }
 
         if (distance <= attackRange)
@@ -115,35 +123,102 @@ public class EnemyAI : MonoBehaviour
 
     private void Attack()
     {
-        if (Time.time < nextAttackTime)
+        //Debug.Log("Attack() llamado");
+
+        if (isAttacking)
+        {
+            //Debug.Log("Im attacking");
             return;
+        }
+           
 
-        nextAttackTime = Time.time + attackCooldown;
-
-        if (animator != null)
+        if (Time.time < nextAttackTime || isAttacking)
         {
-            animator.SetTrigger("ZombieAttack");
+            //Debug.Log("Enemy Attack in cooldown");
+            return;
         }
 
-        if (playerHealth != null)
-        {
-            playerHealth.TakeDamage(attackDamage);
-        }
+        StartCoroutine(AttackRoutine());
     }
 
     private void TriggerHitAnimation()
     {
+        if (zombieHealth != null && zombieHealth.IsDead)
+            return;
+
         if (animator != null)
         {
             animator.SetTrigger("ZombieHit");
         }
     }
 
+
+
     private void TriggerDeathAnimation()
     {
+        Debug.Log("Trigger de muerte activado");
+
         if (animator != null)
         {
+            animator.ResetTrigger("ZombieHit");
+            animator.ResetTrigger("ZombieAttack");
             animator.SetTrigger("ZombieDeath");
+        }
+    }
+
+    private int attackNumber = 0;
+    private System.Collections.IEnumerator AttackRoutine()
+    {
+        attackNumber++;
+
+        Debug.Log($"Ataque #{attackNumber}");
+
+        isAttacking = true;
+
+        nextAttackTime = Time.time + attackCooldown;
+
+        agent.isStopped = true;
+
+        if (animator != null)
+        {
+            animator.SetTrigger("ZombieAttack");
+            //Debug.Log("Trigger ZombieAttack");
+        }
+
+        yield return new WaitForSeconds(attackDuration);
+
+        if(agent != null && agent.isActiveAndEnabled)
+        {
+            agent.isStopped = false;
+        }
+
+        isAttacking = false;
+
+        //Debug.Log("Attack ended");
+    }
+
+    public void DealZombieDamage()
+    {
+        if (player == null || playerHealth == null)
+            return;
+
+        float distance = Vector3.Distance(
+            transform.position,
+            player.position);
+
+        if (distance <= attackRange)
+        {
+            playerHealth.TakeDamage(attackDamage);
+
+            KnockbackReceiver knockback =
+    playerHealth.GetComponent<KnockbackReceiver>();
+
+            if (knockback != null)
+            {
+                knockback.ApplyKnockback(
+                    transform.position,
+                    4f);
+            }
         }
     }
 }

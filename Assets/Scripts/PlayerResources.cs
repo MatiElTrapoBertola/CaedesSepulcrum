@@ -5,11 +5,28 @@ public class PlayerResources : MonoBehaviour
     [Header("Resources")]
     [SerializeField] private int materials;
 
+    private HUD hud;
+
     public int Materials => materials;
+
+    private void Start()
+    {
+        hud = FindFirstObjectByType<HUD>();
+
+        if (hud != null)
+        {
+            hud.UpdateMaterialsUI(materials);
+        }
+    }
 
     public void AddMaterials(int amount)
     {
         materials += amount;
+
+        if (hud != null)
+        {
+            hud.UpdateMaterialsUI(materials);
+        }
 
         Debug.Log("Materiales actuales: " + materials);
     }
@@ -21,10 +38,13 @@ public class PlayerResources : MonoBehaviour
 
         materials -= amount;
 
+        if (hud != null)
+        {
+            hud.UpdateMaterialsUI(materials);
+        }
+
         Debug.Log("Materiales restantes: " + materials);
 
-        return true;    
+        return true;
     }
-
-
 }

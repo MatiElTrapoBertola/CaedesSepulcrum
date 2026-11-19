@@ -5,9 +5,10 @@ public class ChurchNPCInteraction : MonoBehaviour
     [Header("UI Priest Shop")]
     [SerializeField] private GameObject skillShopUI;
     [SerializeField] private float interactionDistance = 3.0f;
-    [SerializeField] private MonoBehaviour cameraScript; // Arrastra aquí el script que mueve tu cámara
 
     private Transform playerTransform;
+    private ThirdPersonCamera cameraScript;
+
     private bool isShopOpen = false;
 
     private void Start()
@@ -27,6 +28,7 @@ public class ChurchNPCInteraction : MonoBehaviour
         if (player == null)
         {
             Health playerHealth = FindFirstObjectByType<Health>();
+
             if (playerHealth != null)
             {
                 player = playerHealth.gameObject;
@@ -36,6 +38,14 @@ public class ChurchNPCInteraction : MonoBehaviour
         if (player != null)
         {
             playerTransform = player.transform;
+
+            // Buscar automáticamente la cámara del jugador
+            cameraScript = FindFirstObjectByType<ThirdPersonCamera>();
+
+            if (cameraScript != null)
+            {
+                Debug.Log("ChurchNPCInteraction: Cámara encontrada.");
+            }
         }
         else
         {
@@ -51,9 +61,12 @@ public class ChurchNPCInteraction : MonoBehaviour
             return;
         }
 
-        float distance = Vector3.Distance(transform.position, playerTransform.position);
+        float distance = Vector3.Distance(
+            transform.position,
+            playerTransform.position);
 
-        if (distance <= interactionDistance && Input.GetKeyDown(KeyCode.F))
+        if (distance <= interactionDistance &&
+            Input.GetKeyDown(KeyCode.F))
         {
             Debug.Log("Tecla F presionada cerca del cura");
             ToggleShop();
@@ -88,6 +101,7 @@ public class ChurchNPCInteraction : MonoBehaviour
     public void CloseShopButton()
     {
         isShopOpen = false;
+
         if (skillShopUI != null)
         {
             skillShopUI.SetActive(false);
@@ -106,21 +120,28 @@ public class ChurchNPCInteraction : MonoBehaviour
 
     private void SetPlayerControlsActive(bool isActive)
     {
-        if (playerTransform != null)
-        {
-            // Desactivamos/Activamos el movimiento
-            PlayerMovement3D movementScript = playerTransform.GetComponent<PlayerMovement3D>();
-            if (movementScript != null) movementScript.enabled = isActive;
+        if (playerTransform == null)
+            return;
 
-            // Desactivamos/Activamos el combate
-            PlayerCombat combatScript = playerTransform.GetComponent<PlayerCombat>();
-            if (combatScript != null) combatScript.enabled = isActive;
+        PlayerMovement3D movementScript =
+            playerTransform.GetComponent<PlayerMovement3D>();
 
-            // Desactivamos/Activamos el script de la cámara asignado en el Inspector
-            if (cameraScript != null)
-            {
-                cameraScript.enabled = isActive;
-            }
-        }
+        if (movementScript != null)
+            movementScript.enabled = isActive;
+
+        PlayerCombat combatScript =
+            playerTransform.GetComponent<PlayerCombat>();
+
+        if (combatScript != null)
+            combatScript.enabled = isActive;
+
+        PlayerActiveSkills skillsScript =
+            playerTransform.GetComponent<PlayerActiveSkills>();
+
+        if (skillsScript != null)
+            skillsScript.enabled = isActive;
+
+        if (cameraScript != null)
+            cameraScript.enabled = isActive;
     }
 }

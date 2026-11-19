@@ -13,15 +13,24 @@ public class HUD : MonoBehaviour
     public float trailDelay = 0.3f;
     public float trailSpeed = 0.4f;
     private Coroutine trailCoroutine;
+    [Header("UI)")]
 
     [SerializeField] private TextMeshProUGUI enemyCount;
     [SerializeField] private TextMeshProUGUI ammoCountText;
     [SerializeField] private Health playerHealth;
+    [SerializeField] private TextMeshProUGUI materialsText;
+    [SerializeField] private Image staminaFill;
 
-    private int enemyCountIndex = 0;
+
+
+    private int enemiesDefeated = 0;
+    private int totalEnemies = 0;
 
     private void Start()
     {
+        Debug.Log("HUD Start: " + gameObject.name +
+          " ID: " + GetInstanceID());
+
         if (playerHealth == null)
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -85,21 +94,56 @@ public class HUD : MonoBehaviour
         }
     }
 
-    public void EnemyDefeated(GameObject enemy)
-    {
-        enemyCountIndex++;
-        if (enemyCount != null)
-        {
-            enemyCount.text = "Bestias Derrotadas: " + enemyCountIndex.ToString();
-        }
-        Destroy(enemy);
-    }
+ 
+
 
     public void UpdateAmmoUI(int currentAmmo, int maxAmmo)
     {
         if (ammoCountText != null)
         {
-            ammoCountText.text = currentAmmo + " / " + maxAmmo;
+            ammoCountText.text = "Munición: " + currentAmmo + " / " + maxAmmo;
+        }
+    }
+
+
+
+    public void UpdateMaterialsUI(int amount)
+    {
+        if (materialsText != null)
+        {
+            materialsText.text = "Materiales: " + amount;
+        }
+    }
+
+    public void UpdateStaminaUI(float current, float max)
+    {
+        if (staminaFill != null)
+        {
+            staminaFill.fillAmount = current / max;
+        }
+    }
+
+    public void SetTotalEnemies(int total)
+    {
+        totalEnemies = total;
+        RefreshEnemyCounter();
+    }
+
+    public void RegisterEnemyKill()
+    {
+        enemiesDefeated++;
+        RefreshEnemyCounter();
+    }
+
+    private void RefreshEnemyCounter()
+    {
+        if (enemyCount != null)
+        {
+            enemyCount.text =
+                "Enemigos derrotados: " +
+                enemiesDefeated +
+                " / " +
+                totalEnemies;
         }
     }
 }
