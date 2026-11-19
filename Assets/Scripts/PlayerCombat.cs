@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,6 +10,7 @@ public class PlayerCombat : MonoBehaviour
 
     [Header("Weapon")]
     [SerializeField] private WeaponType currentWeapon = WeaponType.Shovel;
+
     [Header("Weapon Swap Audio")]
     [SerializeField][Range(0f, 2f)] private float weaponSwapVolume = 1f;
     [SerializeField] private AudioSource weaponSwapAudioSource;
@@ -52,14 +54,12 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private float pistolMinPitch = 0.95f;
     [SerializeField] private float pistolMaxPitch = 1.05f;
 
-   
     [Header("Pistol Reload Audio")]
     [SerializeField][Range(0f, 2f)] private float reloadVolume = 1f;
     [SerializeField] private AudioSource reloadAudioSource;
     [SerializeField] private AudioClip[] reloadClips;
     [SerializeField] private float reloadMinPitch = 0.95f;
     [SerializeField] private float reloadMaxPitch = 1.05f;
-   
 
     [SerializeField] private float explosionRadius = 4f;
     [SerializeField] private float explosionDamage = 15f;
@@ -71,22 +71,48 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private LayerMask aimLayers;
 
     private Animator animator;
+    private HUD hud;
+
+    [Header("Attack Cooldown")]
+    [SerializeField] private float shovelAttackCooldown = 0.9f;
+
+    private bool isAttacking;
+
+    public bool IsAttacking => isAttacking;
 
     private void Start()
     {
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
+
+        if (animator == null)
+        {
+            Debug.LogWarning("PlayerCombat no encontró ningún Animator en el jugador ni en sus hijos.");
+        }
+
+        hud = FindFirstObjectByType<HUD>();
+
         currentAmmo = maxAmmo;
+
+        if (hud != null)
+        {
+            hud.UpdateAmmoUI(currentAmmo, maxAmmo);
+        }
+
         UpdateWeaponVisuals();
 
         if (animator != null)
         {
             animator.SetInteger("WeaponType", (int)currentWeapon);
         }
+
+        
+
+       
     }
 
     public enum WeaponType
     {
-        Shovel, Pistol
+        Shovel = 0, Pistol = 1
     }
 
     public void OnSwitchWeapon(InputAction.CallbackContext context)
@@ -132,48 +158,83 @@ public class PlayerCombat : MonoBehaviour
 
     private void PerformShovelAttack()
     {
-        if (animator != null)
+        if (isAttacking)
+            return;
+
+        if (activeSkills == null || !activeSkills.SinPiedadActive)
         {
-            animator.SetInteger("AttackIndex", Random.Range(0, 3));
-            animator.SetTrigger("Attack");
+            if (stamina != null && !stamina.ConsumeStamina(attackStaminaCost))
+                return;
         }
 
-        if (!activeSkills.SinPiedadActive)
+        StartCoroutine(AttackCooldown());
+
+        if (animator != null)
         {
-            if (!stamina.ConsumeStamina(attackStaminaCost))
-                return;
+            int randomCombo = Random.Range(0, 3);
+
+            if (randomCombo == 0)
+            {
+                animator.SetTrigger("Melee1");
+            }
+            else if (randomCombo == 1)
+            {
+                animator.SetTrigger("Melee2");
+            }
+            else
+            {
+                animator.SetTrigger("Melee3");
+            }
         }
 
         PlayShovelSound();
 
-        Collider[] enemies = Physics.OverlapSphere(transform.position + transform.forward, attackRange, enemyLayer);
-        float damage = damageManager.GetFinalDamage();
 
-        foreach (Collider enemy in enemies)
-        {
-            Health enemyHealth = enemy.GetComponent<Health>();
 
-            if (enemyHealth != null)
-            {
-                PlayShovelImpactSound(enemy.transform.position);
-                bool divineAttack = damageManager.ConsumeDivineHit();
-
-                enemyHealth.TakeDamage(damage);
-
-                if (divineAttack)
-                {
-                    CreateDivineExplosion(enemy.transform.position);
-                }
-
-                Debug.Log(enemy.name + " recibió " + damage + " puntos de daño.");
-            }
-        }
     }
 
-    private void OnDrawGizmosSelected()
+
+
+    private void PerformPistolAttack()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position + transform.forward, attackRange);
+        if (Time.time < nextFireTime)
+            return;
+
+        if (animator != null)
+        {
+            animator.SetTrigger("Shoot");
+        }
+
+        nextFireTime = Time.time + fireRate;
+
+        if (activeSkills == null || !activeSkills.SinPiedadActive)
+        {
+            if (currentAmmo <= 0)
+            {
+                Debug.Log("Sin municion");
+                return;
+            }
+
+            currentAmmo--;
+
+            if (hud != null)
+            {
+                hud.UpdateAmmoUI(currentAmmo, maxAmmo);
+            }
+        }
+
+        if (bullet != null && weaponCannon != null && playerCamera != null)
+        {
+            Quaternion bulletRotation = Quaternion.LookRotation(playerCamera.transform.forward);
+            Bullet newBullet = Instantiate(bullet, weaponCannon.position, bulletRotation);
+
+            float damage = damageManager != null ? damageManager.GetFinalDamage() : 10f;
+            bool divineAttack = damageManager != null && damageManager.ConsumeDivineHit();
+
+            newBullet.Initialize(damage, divineAttack, explosionRadius, explosionDamage, enemyLayer);
+        }
+
+        PlayPistolShotSound();
     }
 
     private void CreateDivineExplosion(Vector3 position)
@@ -197,45 +258,15 @@ public class PlayerCombat : MonoBehaviour
         Debug.Log("Explosion divina creada");
     }
 
-    private void PerformPistolAttack()
-    {
-        if (animator != null)
-        {
-            animator.SetTrigger("Attack");
-        }
-
-        if (Time.time < nextFireTime)
-            return;
-
-        nextFireTime = Time.time + fireRate;
-        Debug.Log("Pistola disparada");
-
-        if (!activeSkills.SinPiedadActive)
-        {
-            if (currentAmmo <= 0)
-            {
-                Debug.Log("Sin municion");
-                return;
-            }
-
-            currentAmmo--;
-            Debug.Log("Municion restante : " + currentAmmo + "/" + maxAmmo);
-        }
-
-        Quaternion bulletRotation = Quaternion.LookRotation(playerCamera.transform.forward);
-        Bullet newBullet = Instantiate(bullet, weaponCannon.position, bulletRotation);
-
-        PlayPistolShotSound();
-
-        float damage = damageManager.GetFinalDamage();
-        bool divineAttack = damageManager.ConsumeDivineHit();
-
-        newBullet.Initialize(damage, divineAttack, explosionRadius, explosionDamage, enemyLayer);
-    }
-
     public void Reload()
     {
         currentAmmo = maxAmmo;
+
+        if (hud != null)
+        {
+            hud.UpdateAmmoUI(currentAmmo, maxAmmo);
+        }
+
         PlayReloadSound();
         Debug.Log("Recargando");
     }
@@ -243,14 +274,8 @@ public class PlayerCombat : MonoBehaviour
     private void PlayPistolShotSound()
     {
         if (pistolAudioSource == null || pistolShotClips == null || pistolShotClips.Length == 0) return;
-
         AudioClip selectedClip = pistolShotClips[Random.Range(0, pistolShotClips.Length)];
-
-        if (randomPitch)
-        {
-            pistolAudioSource.pitch = Random.Range(pistolMinPitch, pistolMaxPitch);
-        }
-
+        if (randomPitch) pistolAudioSource.pitch = Random.Range(pistolMinPitch, pistolMaxPitch);
         pistolAudioSource.PlayOneShot(selectedClip, pistolVolume);
         pistolAudioSource.pitch = 1f;
     }
@@ -258,7 +283,6 @@ public class PlayerCombat : MonoBehaviour
     private void PlayReloadSound()
     {
         if (reloadAudioSource == null || reloadClips == null || reloadClips.Length == 0) return;
-
         AudioClip selectedClip = reloadClips[Random.Range(0, reloadClips.Length)];
         reloadAudioSource.pitch = Random.Range(reloadMinPitch, reloadMaxPitch);
         reloadAudioSource.PlayOneShot(selectedClip, reloadVolume);
@@ -268,7 +292,6 @@ public class PlayerCombat : MonoBehaviour
     private void PlayShovelSound()
     {
         if (shovelAudioSource == null || shovelSwingClips == null || shovelSwingClips.Length == 0) return;
-
         AudioClip selectedClip = shovelSwingClips[Random.Range(0, shovelSwingClips.Length)];
         shovelAudioSource.pitch = Random.Range(shovelMinPitch, shovelMaxPitch);
         shovelAudioSource.PlayOneShot(selectedClip, shovelSwingVolume);
@@ -278,10 +301,8 @@ public class PlayerCombat : MonoBehaviour
     private void PlayShovelImpactSound(Vector3 hitPosition)
     {
         if (shovelHitClips == null || shovelHitClips.Length == 0) return;
-
         AudioClip selectedClip = shovelHitClips[Random.Range(0, shovelHitClips.Length)];
         float randomPitchVal = Random.Range(shovelHitMinPitch, shovelHitMaxPitch);
-
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.PlaySFX(selectedClip, shovelImpactVolume, randomPitchVal);
@@ -291,7 +312,6 @@ public class PlayerCombat : MonoBehaviour
     private void PlayWeaponSwapSound()
     {
         if (weaponSwapAudioSource == null || weaponSwapClips == null || weaponSwapClips.Length == 0) return;
-
         AudioClip selectedClip = weaponSwapClips[Random.Range(0, weaponSwapClips.Length)];
         weaponSwapAudioSource.pitch = Random.Range(weaponSwapMinPitch, weaponSwapMaxPitch);
         weaponSwapAudioSource.PlayOneShot(selectedClip, weaponSwapVolume);
@@ -300,7 +320,60 @@ public class PlayerCombat : MonoBehaviour
 
     private void UpdateWeaponVisuals()
     {
-        shovelObject.SetActive(currentWeapon == WeaponType.Shovel);
-        pistolObject.SetActive(currentWeapon == WeaponType.Pistol);
+        if (shovelObject != null) shovelObject.SetActive(currentWeapon == WeaponType.Shovel);
+        if (pistolObject != null) pistolObject.SetActive(currentWeapon == WeaponType.Pistol);
+    }
+
+    private System.Collections.IEnumerator AttackCooldown()
+    {
+        isAttacking = true;
+
+        yield return new WaitForSeconds(shovelAttackCooldown);
+
+        isAttacking = false;
+    }
+
+    public void DealShovelDamage()
+    {
+        Debug.Log("EVENTO ACTIVADO");
+
+        Collider[] enemies = Physics.OverlapSphere(transform.position + transform.forward, attackRange, enemyLayer);
+
+        Debug.Log("Enemigos encontrados: " + enemies.Length);
+
+        foreach (Collider collider in enemies)
+        {
+            Debug.Log("Golpeando: " + collider.name);
+
+            Health enemyHealth = collider.GetComponentInParent<Health>();
+
+            Debug.Log("Health encontrado: " + enemyHealth);
+
+            if (enemyHealth != null)
+            {
+                Debug.Log("Health detectado en: " + enemyHealth.gameObject.name);
+
+                float damage = damageManager != null ? damageManager.GetFinalDamage() : 10f;
+
+                Debug.Log("Dano de pala: " + damage);
+
+                enemyHealth.TakeDamage(damage);
+
+                PlayShovelImpactSound(collider.transform.position);
+
+                KnockbackReceiver knockback =
+                    enemyHealth.GetComponent<KnockbackReceiver>();
+
+                if (knockback != null)
+                {
+                    knockback.ApplyKnockback(
+                        transform.position,
+                        6f);
+                }
+            }
+        }
+
+
+
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem.HID;
 
 public class WaveManager : MonoBehaviour
 {
@@ -34,8 +35,24 @@ public class WaveManager : MonoBehaviour
     private bool waveFinished = false;
     private int activeSpawnCoroutines = 0;
 
+    private HUD hud;
+    private int totalEnemiesThisNight;
+    private int lastAliveCount;
+
     private void Start()
     {
+        hud = FindFirstObjectByType<HUD>();
+
+        totalEnemiesThisNight =
+            normalEnemyCount +
+            strongEnemyCount +
+            (spawnBoss ? 1 : 0);
+
+        if (hud != null)
+        {
+            hud.SetTotalEnemies(totalEnemiesThisNight);
+        }
+
         StartCoroutine(StartWave());
     }
 
@@ -66,28 +83,46 @@ public class WaveManager : MonoBehaviour
         if (!waveStarted)
         {
             spawnTimer += Time.deltaTime;
+
             if (spawnTimer >= 3f)
             {
                 waveStarted = true;
             }
+
             return;
         }
 
-        if (waveFinished) return;
+        if (waveFinished)
+            return;
+
+        int beforeCount = aliveEnemies.Count;
 
         aliveEnemies.RemoveAll(enemy => enemy == null);
+
+        int removedEnemies = beforeCount - aliveEnemies.Count;
+
+        if (removedEnemies > 0 && hud != null)
+        {
+            for (int i = 0; i < removedEnemies; i++)
+            {
+                hud.RegisterEnemyKill();
+            }
+        }
 
         bool hasSpawnedAll = (activeSpawnCoroutines == 0);
 
         if (waveStarted && hasSpawnedAll && aliveEnemies.Count == 0)
         {
-            int totalExpectedEnemies = normalEnemyCount + strongEnemyCount + (spawnBoss ? 1 : 0);
+            int totalExpectedEnemies =
+                normalEnemyCount +
+                strongEnemyCount +
+                (spawnBoss ? 1 : 0);
 
             if (totalExpectedEnemies > 0)
             {
                 waveFinished = true;
-                Debug.Log("¡Todos los enemigos derrotados! Transicionando a la Iglesia en 4 segundos...");
 
+                Debug.Log("¡Todos los enemigos derrotados! Transicionando a la Iglesia en 4 segundos...");
 
                 StartCoroutine(DelayedTransitionRoutine());
             }

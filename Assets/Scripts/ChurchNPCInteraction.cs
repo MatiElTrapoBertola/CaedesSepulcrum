@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class ChurchNPCInteraction : MonoBehaviour
 {
-    [Header("UI del Menu de Habilidades")]
+    [Header("UI Priest Shop")]
     [SerializeField] private GameObject skillShopUI;
     [SerializeField] private float interactionDistance = 3.0f;
 
     private Transform playerTransform;
-    private MonoBehaviour playerMovementScript;
-    private MonoBehaviour playerCameraScript;
+    private ThirdPersonCamera cameraScript;
+
     private bool isShopOpen = false;
 
     private void Start()
@@ -28,6 +28,7 @@ public class ChurchNPCInteraction : MonoBehaviour
         if (player == null)
         {
             Health playerHealth = FindFirstObjectByType<Health>();
+
             if (playerHealth != null)
             {
                 player = playerHealth.gameObject;
@@ -38,16 +39,12 @@ public class ChurchNPCInteraction : MonoBehaviour
         {
             playerTransform = player.transform;
 
-            // Buscamos el script de movimiento en el objeto Player (por ejemplo: PlayerMovement3D)
-            // Cambia "PlayerMovement3D" por el nombre exacto de tu script de movimiento si es diferente
-            playerMovementScript = player.GetComponent<MonoBehaviour>(); // O usa GetComponent específico si lo sabes
+            // Buscar automáticamente la cámara del jugador
+            cameraScript = FindFirstObjectByType<ThirdPersonCamera>();
 
-            // Buscamos la cámara del jugador (suele estar en el hijo PlayerCamera)
-            Transform playerCameraObj = player.transform.Find("PlayerCamera");
-            if (playerCameraObj != null)
+            if (cameraScript != null)
             {
-                // Buscamos cualquier script de rotación o control en la cámara
-                playerCameraScript = playerCameraObj.GetComponent<MonoBehaviour>();
+                Debug.Log("ChurchNPCInteraction: Cámara encontrada.");
             }
         }
         else
@@ -64,11 +61,14 @@ public class ChurchNPCInteraction : MonoBehaviour
             return;
         }
 
-        float distance = Vector3.Distance(transform.position, playerTransform.position);
+        float distance = Vector3.Distance(
+            transform.position,
+            playerTransform.position);
 
-        // Si está cerca y presiona 'F'
-        if (distance <= interactionDistance && Input.GetKeyDown(KeyCode.F))
+        if (distance <= interactionDistance &&
+            Input.GetKeyDown(KeyCode.F))
         {
+            Debug.Log("Tecla F presionada cerca del cura");
             ToggleShop();
         }
     }
@@ -76,6 +76,7 @@ public class ChurchNPCInteraction : MonoBehaviour
     private void ToggleShop()
     {
         isShopOpen = !isShopOpen;
+
         if (skillShopUI != null)
         {
             skillShopUI.SetActive(isShopOpen);
@@ -86,7 +87,6 @@ public class ChurchNPCInteraction : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
-            // Desactivamos los scripts de control para congelar al jugador y la vista
             SetPlayerControlsActive(false);
         }
         else
@@ -94,7 +94,6 @@ public class ChurchNPCInteraction : MonoBehaviour
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            // Devolvemos el control
             SetPlayerControlsActive(true);
         }
     }
@@ -102,6 +101,7 @@ public class ChurchNPCInteraction : MonoBehaviour
     public void CloseShopButton()
     {
         isShopOpen = false;
+
         if (skillShopUI != null)
         {
             skillShopUI.SetActive(false);
@@ -113,21 +113,35 @@ public class ChurchNPCInteraction : MonoBehaviour
         SetPlayerControlsActive(true);
     }
 
+    public void ClosePanel()
+    {
+        CloseShopButton();
+    }
+
     private void SetPlayerControlsActive(bool isActive)
     {
-        // Desactiva o activa los scripts de movimiento y combate para que no reaccionen al teclado/mouse
-        if (playerTransform != null)
-        {
-            // Desactiva los scripts del jugador (puedes ajustar según los componentes que tenga tu personaje)
-            MonoBehaviour[] scripts = playerTransform.GetComponentsInChildren<MonoBehaviour>();
-            foreach (MonoBehaviour script in scripts)
-            {
-                // Evitamos desactivar este mismo script u otros esenciales de UI/Salud
-                if (script != this && script.GetType().Name != "Health")
-                {
-                    script.enabled = isActive;
-                }
-            }
-        }
+        if (playerTransform == null)
+            return;
+
+        PlayerMovement3D movementScript =
+            playerTransform.GetComponent<PlayerMovement3D>();
+
+        if (movementScript != null)
+            movementScript.enabled = isActive;
+
+        PlayerCombat combatScript =
+            playerTransform.GetComponent<PlayerCombat>();
+
+        if (combatScript != null)
+            combatScript.enabled = isActive;
+
+        PlayerActiveSkills skillsScript =
+            playerTransform.GetComponent<PlayerActiveSkills>();
+
+        if (skillsScript != null)
+            skillsScript.enabled = isActive;
+
+        if (cameraScript != null)
+            cameraScript.enabled = isActive;
     }
 }
