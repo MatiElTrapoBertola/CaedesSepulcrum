@@ -3757,6 +3757,21 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d304892f04d649f4597619b311674665, type: 3}
+--- !u!1 &278204549 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1390273180890659439, guid: d304892f04d649f4597619b311674665, type: 3}
+  m_PrefabInstance: {fileID: 278204548}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &278204550 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7913422574351606567, guid: d304892f04d649f4597619b311674665, type: 3}
+  m_PrefabInstance: {fileID: 278204548}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &278204551 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5091470391465725259, guid: d304892f04d649f4597619b311674665, type: 3}
+  m_PrefabInstance: {fileID: 278204548}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &278220115
 GameObject:
   m_ObjectHideFlags: 0
@@ -24622,9 +24637,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28ab3ae464bdd71409c848e5d5d408d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenu
-  pausePanel: {fileID: 0}
-  controlsPanel: {fileID: 0}
-  crosshair: {fileID: 0}
+  pausePanel: {fileID: 278204551}
+  controlsPanel: {fileID: 278204550}
+  crosshair: {fileID: 278204549}
 --- !u!1 &1062956888
 GameObject:
   m_ObjectHideFlags: 0

@@ -46,8 +46,8 @@ public class GameManager : MonoBehaviour
         string sceneName = scene.name;
 
         if (sceneName == "MainMenu" ||
-            sceneName == "WinScene" ||
-            sceneName == "DefeatedScene")
+            sceneName == "Victory" ||
+            sceneName == "Defeat")
         {
             if (currentHudIstance != null)
             {
@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
 
         if (currentNight >= 7)
         {
-            SceneManager.LoadScene("WinScene");
+            SceneManager.LoadScene("Victory");
         }
         else
         {
