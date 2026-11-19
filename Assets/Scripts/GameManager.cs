@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject hudPrefab;
 
     private GameObject currentHudIstance;
+    public GameObject CurrentHUD => currentHudIstance;
 
     private void Awake()
     {
@@ -44,11 +45,14 @@ public class GameManager : MonoBehaviour
     {
         string sceneName = scene.name;
 
-        if (sceneName == "MainMenu" || sceneName == "WinScene" || sceneName == "DefeatedScene")
+        if (sceneName == "MainMenu" ||
+            sceneName == "WinScene" ||
+            sceneName == "DefeatedScene")
         {
             if (currentHudIstance != null)
             {
                 Destroy(currentHudIstance);
+                currentHudIstance = null;
             }
         }
         else
@@ -67,14 +71,12 @@ public class GameManager : MonoBehaviour
 
         spawnPointName = "SpawnChurch";
 
-        if (currentNight >= 3)
+        if (currentNight >= 7)
         {
-           
             SceneManager.LoadScene("WinScene");
         }
         else
         {
-           
             SceneManager.LoadScene("ChurchScene");
         }
     }
@@ -91,13 +93,27 @@ public class GameManager : MonoBehaviour
 
         if (currentNight == 2)
         {
-            Debug.Log("Intentando cargar Noche2");
             SceneManager.LoadScene("Night 2");
         }
         else if (currentNight == 3)
         {
-            Debug.Log("Intentando cargar Noche3");
             SceneManager.LoadScene("Night 3");
+        }
+        else if (currentNight == 4)
+        {
+            SceneManager.LoadScene("Night 4");
+        }
+        else if (currentNight == 5)
+        {
+            SceneManager.LoadScene("Night 5");
+        }
+        else if (currentNight == 6)
+        {
+            SceneManager.LoadScene("Night 6");
+        }
+        else if (currentNight == 7)
+        {
+            SceneManager.LoadScene("Night 7");
         }
     }
 

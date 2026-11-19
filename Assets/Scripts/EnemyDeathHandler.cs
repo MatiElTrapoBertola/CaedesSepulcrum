@@ -48,21 +48,19 @@ public class EnemyDeathHandler : MonoBehaviour
     {
         PlayDeathSound();
 
-     
         if (lootPrefab != null)
         {
             Instantiate(lootPrefab, transform.position, Quaternion.identity);
         }
 
-       
         DropHealthPotion();
 
-      
         PlayerResources playerResources = FindFirstObjectByType<PlayerResources>();
 
         if (playerResources != null)
         {
             PlayerSkillsManager skillsManager = FindFirstObjectByType<PlayerSkillsManager>();
+
             float materialMultiplier = 1f;
 
             if (skillsManager != null)
@@ -71,12 +69,32 @@ public class EnemyDeathHandler : MonoBehaviour
             }
 
             int finalMaterials = Mathf.RoundToInt(resourceDropAmount * materialMultiplier);
+
             playerResources.AddMaterials(finalMaterials);
 
             Debug.Log("Materiales obtenidos: " + finalMaterials);
         }
 
-        GetComponent<Collider>().enabled = false;
+        Collider enemyCollider = GetComponent<Collider>();
+
+        if (enemyCollider != null)
+        {
+            enemyCollider.enabled = false;
+        }
+
+        EnemyAI enemyAI = GetComponent<EnemyAI>();
+
+        if (enemyAI != null)
+        {
+            enemyAI.enabled = false;
+        }
+
+        UnityEngine.AI.NavMeshAgent agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
+
+        if (agent != null)
+        {
+            agent.enabled = false;
+        }
 
         PlayerKillTracker killTracker = FindFirstObjectByType<PlayerKillTracker>();
 
@@ -85,7 +103,7 @@ public class EnemyDeathHandler : MonoBehaviour
             killTracker.RegisterKill();
         }
 
-        Destroy(gameObject, 0.1f);
+        Destroy(gameObject, 2f);
     }
 
     private void DropHealthPotion()

@@ -8,6 +8,7 @@ public class PlayerMovement3D : MonoBehaviour
     [SerializeField] private float sprintMultiplier = 1.5f;
     [SerializeField] private PlayerStamina stamina;
     [SerializeField] private PlayerActiveSkills activeSkills;
+    [SerializeField] private PlayerCombat playerCombat;
 
     [Header("Camera")]
     [SerializeField] private Transform cameraTransform;
@@ -60,6 +61,17 @@ public class PlayerMovement3D : MonoBehaviour
 
     void Update()
     {
+        if (playerCombat != null && playerCombat.IsAttacking)
+        {
+            if (animator != null)
+            {
+                animator.SetFloat("MoveX", 0);
+                animator.SetFloat("MoveY", 0);
+            }
+
+            return;
+        }
+
         float currentSpeed = speed;
         bool isRunning = false;
 
@@ -87,8 +99,15 @@ public class PlayerMovement3D : MonoBehaviour
 
         if (animator != null)
         {
+            float animMoveY = moveInput.y;
+
+            if (!isRunning)
+            {
+                animMoveY *= 0.5f;
+            }
+
             animator.SetFloat("MoveX", moveInput.x, 0.1f, Time.deltaTime);
-            animator.SetFloat("MoveY", moveInput.y, 0.1f, Time.deltaTime);
+            animator.SetFloat("MoveY", animMoveY, 0.1f, Time.deltaTime);
             animator.SetBool("isRunning", isRunning);
         }
 

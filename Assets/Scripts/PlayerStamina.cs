@@ -7,6 +7,7 @@ public class PlayerStamina : MonoBehaviour
     [SerializeField] private float currentStamina;
     [SerializeField] private float regenDelay = 2f;
     private float lastStaminaUseTime;
+    private HUD hud;
 
 
 
@@ -19,6 +20,16 @@ public class PlayerStamina : MonoBehaviour
     private void Awake()
     {
         currentStamina = maxStamina;
+    }
+
+    private void Start()
+    {
+        hud = FindFirstObjectByType<HUD>();
+
+        if(hud != null)
+        {
+            hud.UpdateStaminaUI(currentStamina, maxStamina);
+        }
     }
 
     private void Update()
@@ -36,6 +47,12 @@ public class PlayerStamina : MonoBehaviour
         {
             currentStamina += regenRate * Time.deltaTime;
             currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
+
+        }
+
+        if(hud != null)
+        {
+            hud.UpdateStaminaUI(currentStamina, maxStamina);
         }
     }
 
@@ -54,6 +71,12 @@ public class PlayerStamina : MonoBehaviour
         currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
         
         lastStaminaUseTime = Time.time;
+
+        if(hud != null)
+        {
+            hud.UpdateStaminaUI(currentStamina, maxStamina);
+        }
+
         return true;
     }
 
@@ -61,10 +84,20 @@ public class PlayerStamina : MonoBehaviour
     {
         currentStamina += amount;
         currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
+
+        if(hud != null)
+        {
+            hud.UpdateStaminaUI(currentStamina, maxStamina);
+        }
     }
 
     public void FillStamina()
     {
         currentStamina = maxStamina;
+
+        if (hud != null)
+        {
+            hud.UpdateStaminaUI(currentStamina, maxStamina);
+        }
     }
 }
