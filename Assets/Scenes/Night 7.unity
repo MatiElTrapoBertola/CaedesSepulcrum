@@ -45837,15 +45837,15 @@ AudioSource:
   m_Resource: {fileID: 8300000, guid: c8fb9aac2adf7ee4090190f611f4e458, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
-  m_Pitch: 1
+  m_Pitch: 1.1
   Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
-  DopplerLevel: 1
-  MinDistance: 43
-  MaxDistance: 500
+  DopplerLevel: 0
+  MinDistance: 11.21
+  MaxDistance: 43
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
